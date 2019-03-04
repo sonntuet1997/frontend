@@ -1,0 +1,100 @@
+﻿<div class="panel">
+	<div [attr.id]="hiddenDivId" data-toggle="collapse" [attr.data-target]="'#' + panelDivId" aria-expanded="true"
+			 aria-controls="panel1"></div>
+	<div class="list-group small">
+		<div class="list-group-item header-panel" (click)="collapse()">
+			<div class="title-panel">
+				{{panel.title}}
+			</div>
+			<div class="icon-title-panel">
+				<i *ngIf="!panel.isAccessed" class="fa fa-plus right-icon fix-toggle-icon blocked-icon"
+					 aria-hidden="true"></i>
+				<i *ngIf="isPanel1Collapse " class="fa fa-minus right-icon fix-toggle-icon" aria-hidden="true"></i>
+				<i *ngIf="!isPanel1Collapse && panel.isAccessed" class="fa fa-plus right-icon fix-toggle-icon"
+					 aria-hidden="true"></i>
+			</div>
+		</div>
+	</div>
+	<div [attr.id]="panelDivId" class="collapse">
+		<div class="list-group small">
+			<div *ngIf="panel.isShow[0]" routerLinkActive="active-item-panel" [routerLink]="['/All/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-inbox" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">All</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[0] > 0" class="badge badge-primary right-icon">{{panel.badges[0]}}</span>
+					<i *ngIf="panel.isNew[0]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div *ngIf="panel.isShow[1]" routerLinkActive="active-item-panel" [routerLink]="['/New/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-envelope" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">New</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[1] > 0" class="badge badge-primary right-icon">{{panel.badges[1]}}</span>
+					<i *ngIf="panel.isNew[1]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div *ngIf="panel.isShow[2]" routerLinkActive="active-item-panel"
+					 [routerLink]="['/InProgress/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-cogs" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">Inprogress</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[2] > 0" class="badge badge-primary right-icon">{{panel.badges[2]}}</span>
+					<i *ngIf="panel.isNew[2]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div *ngIf="panel.isShow[3]" routerLinkActive="active-item-panel" [routerLink]="['/Resolved/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-registered" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">Resolved</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[3] > 0" class="badge badge-primary right-icon">{{panel.badges[3]}}</span>
+					<i *ngIf="panel.isNew[3]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div *ngIf="panel.isShow[4]" routerLinkActive="active-item-panel" [routerLink]="['/Feedback/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-mail-reply-all" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">Feedback</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[4] > 0" class="badge badge-primary right-icon">{{panel.badges[4]}}</span>
+					<i *ngIf="panel.isNew[4]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div *ngIf="panel.isShow[5]" routerLinkActive="active-item-panel" [routerLink]="['/OutOfDate/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-calendar-times-o" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">Out Of Date</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[5] > 0" class="badge badge-primary right-icon">{{panel.badges[5]}}</span>
+					<i *ngIf="panel.isNew[5]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div *ngIf="panel.isShow[6]" routerLinkActive="active-item-panel" [routerLink]="['/Closed/' + panel.url]"
+					 class="list-group-item item-panel list-group-item ">
+				<div class="icon-title-panel left-icon">
+					<i class="fa fa-minus-circle" aria-hidden="true"></i>
+				</div>
+				<span class="title-item-panel">Closed</span>
+				<div class="icon-title-panel right-icon">
+					<span *ngIf="panel.badges[6] > 0" class="badge badge-primary right-icon">{{panel.badges[6]}}</span>
+					<i *ngIf="panel.isNew[6]" class="fa small fa-circle right-icon fix-dot-icon" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

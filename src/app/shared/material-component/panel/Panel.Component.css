@@ -1,0 +1,68 @@
+﻿.item-panel:hover {
+	background-color: rgba(233, 235, 238, .7);
+	border-left: solid 2px #0275d8;
+	color: black;
+}
+
+.header-panel:hover {
+	background-color: white;
+	color: black;
+}
+
+.blocked-icon {
+	color: rgba(0, 0, 0, .5);
+}
+
+.panel {
+	margin-top: 15px;
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
+}
+
+.header-panel {
+	display: inline;
+	border-bottom: 0;
+	/*position: fixed;.*/
+}
+
+.title-panel {
+	display: inline;
+}
+
+.icon-title-panel {
+	display: inline;
+}
+
+.right-icon {
+	float: right;
+	margin-left: 4px;
+}
+
+.fix-dot-icon {
+	font-size: 60%;
+	line-height: 1.5;
+}
+
+.item-panel {
+	display: inline;
+}
+
+.fix-toggle-icon {
+	line-height: 2.5;
+}
+
+.left-icon {
+	float: left;
+	margin-right: 10px;
+}
+
+.active-item-panel {
+	border-left: solid 3px #0275d8;
+}
+
+.active-item-panel .title-item-panel {
+	font-weight: bold;
+}
+
+.title-panel {
+	font-size: 1.2rem;
+}

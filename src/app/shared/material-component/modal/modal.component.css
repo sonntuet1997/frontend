@@ -1,0 +1,20 @@
+.modal-header {
+	background-color: #0064b4;
+	color: aliceblue;
+}
+
+.modal-footer {
+	padding: 1% 4% 1% 1%;
+}
+
+.modal-content {
+	margin: auto;
+	display: block;
+}
+
+@media (min-width: 768px) {
+	.modal-xl {
+		width: 90%;
+		max-width: 1000px;
+	}
+}

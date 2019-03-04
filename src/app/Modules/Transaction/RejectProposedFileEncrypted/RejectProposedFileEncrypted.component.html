@@ -1,0 +1,145 @@
+<app-modal #Modal>
+	<modal-header>
+		<h4 class="modal-title" id="addTransactionModalLabel">Create Transaction</h4>
+		<p class="modal-intro">Nhập các thông tin dưới đây </p>
+	</modal-header>
+	<modal-body>
+		<form [formGroup]="myForm">
+			<div class="form-group text-left">
+				<label for="transactionId">Mã giao dịch</label>
+				<input formControlName="transactionId" type="text" class="form-control" disabled>
+			</div>
+			<div class="form-group text-left">
+				<label for="timestamp">Thời gian thực hiện</label>
+				<input formControlName="timestamp" type="text" class="form-control" disabled>
+			</div>
+		</form>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+		<button (click)="addTransaction(myForm);" type="submit" class="btn btn-success" data-dismiss="modal">Xác nhận
+		</button>
+	</modal-footer>
+</app-modal>
+<div class="container col-md-6" style="background: rgba(0,0,0,0.35);padding: 10px;">
+	<div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+		<strong>Lỗi:</strong> {{errorMessage}}
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="transaction-title" id='transactionName'>CreateDemo</h1>
+			<p class="invoke_cancel" id='invoke_cancel'>Thực hiện</p>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-12">
+					Chức năng này cần các thông tin sau :
+					<br>
+					<ul>
+
+
+						<li><span class="attribute"><b>Mã giao dịch</b></span></li>
+
+
+						<li><span class="attribute"><b>Thời gian thực hiện</b></span></li>
+
+
+					</ul>
+				</div>
+			</div>
+			<button type="button" class="btn btn-primary invokeTransactionBtn" (click)="Modal.open()">Thực hiện</button>
+		</div>
+	</div>
+</div>
+
+<div>
+	<div class="row">
+		<div class="caption">
+			<span>Lịch sử giao dịch</span>
+		</div>
+	</div>
+	<div class="row">
+		<table class="table table-bordered">
+			<thead style="white-space: nowrap">
+			<tr>
+				<th>#</th>
+				<th>Mã giao dịch</th>
+				<th>Thời gian thực hiện</th>
+				<!--<th>Tùy chọn</th>-->
+			</tr>
+			</thead>
+			<tbody>
+			<!--<tr>-->
+			<!--<td></td>-->
+			<!--<td>-->
+			<!--<input class="form-control" [(ngModel)]="SearchCityEntity.Code" type="text" placeholder="Search..."-->
+			<!--(keydown.enter)="Search(SearchCityEntity)">-->
+			<!--</td>-->
+			<!--<td>-->
+			<!--<input class="form-control" [(ngModel)]="SearchCityEntity.Name" type="text" placeholder="Search..."-->
+			<!--(keydown.enter)="Search(SearchCityEntity)">-->
+			<!--</td>-->
+			<!--<td>-->
+			<!--<input class="form-control" [(ngModel)]="SearchCityEntity.Geography" type="text"-->
+			<!--placeholder="Search..." (keydown.enter)="Search(SearchCityEntity)">-->
+			<!--</td>-->
+			<!--<td>-->
+			<!--<input class="form-control" [(ngModel)]="SearchCityEntity.ZipCode" type="text"-->
+			<!--placeholder="Search..." (keydown.enter)="Search(SearchCityEntity)">-->
+			<!--</td>-->
+			<!--<td style="text-align: center">-->
+			<!--<button  type="button" class="btn btn-success btn-circle"><i-->
+			<!--class="fa fa-plus fa-1x" aria-hidden="true"></i></button>-->
+			<!--<button type="button" class="btn btn-success btn-circle"><i class="fa fa-download fa-1x"-->
+			<!--aria-hidden="true"></i></button>-->
+			<!--</td>-->
+			<!--</tr>-->
+			<tr *ngFor="let transaction of allTransactions; let i = index">
+				<td class="text-center">
+					<!--{{PagingModel.Take * PagingModel.Active + i + 1}}-->
+				</td>
+				<td>
+					{{transaction.transactionId}}
+					<!--<span *ngIf="!City.IsEdit">{{City.Name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="City.Name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="City.IsEdit">-->
+				</td>
+				<td>
+					{{transaction.timestamp}}
+					<!--<span *ngIf="!City.IsEdit">{{City.Geography}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="City.Geography" type="text"-->
+					<!--placeholder="Enter Geography..." *ngIf="City.IsEdit">-->
+				</td>
+				<!--<td style="text-align: center">-->
+				<!--<div *ngIf="!City.IsEdit">-->
+				<!--<button type="button" class="btn btn-primary btn-circle"-->
+				<!--(click)="Edit(City)">-->
+				<!--<i class="fa fa-edit fa-1x" aria-hidden="true"></i>-->
+				<!--</button>-->
+				<!--<button type="button" class="btn btn-danger btn-circle delete"-->
+				<!--mwlConfirmationPopover [popoverTitle]="'Warning!'"-->
+				<!--[popoverMessage]="'Delete action cannot be back!'"-->
+				<!--placement="left" (confirm)="Delete(City)">-->
+				<!--<i class="fa fa-trash fa-1x" aria-hidden="true"></i>-->
+				<!--</button>-->
+				<!--</div>-->
+				<!--<div *ngIf="City.IsEdit">-->
+				<!--<button type="button" class="btn btn-primary btn-circle"-->
+				<!--(click)="Save(City)">-->
+				<!--<i class="fa fa-save fa-1x" aria-hidden="true"></i>-->
+				<!--</button>-->
+				<!--<button type="button" class="btn btn-danger btn-circle delete"-->
+				<!--(click)="Cancel(City)">-->
+				<!--<i class="fa fa-times fa-1x" aria-hidden="true"></i>-->
+				<!--</button>-->
+				<!--</div>-->
+				<!--</td>-->
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--<app-paging [PagingModel]="PagingModel" [dot]="true" (onChanges)="Search(SearchCityEntity,true)"></app-paging>-->

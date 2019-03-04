@@ -1,0 +1,12 @@
+﻿<div class="modal myModal" [ngClass]="modal" (keyup.esc)="toggleScrollBody()">
+	<div class="modal-content" (mouseenter)="showTitle()" (mouseleave)="offTitle()">
+		<img [src]="imgContent" class="img-modal-content" #imgRef2>
+		<FileBrowser [(ngModel)]="value" [Multiple]="false" [ModalSize]="'xl'">
+			<OpenDiv>
+				<div class="attr-modal-content" *ngIf="isShowTitle">
+					<div>Update avatar</div>
+				</div>
+			</OpenDiv>
+		</FileBrowser>
+	</div>
+</div>

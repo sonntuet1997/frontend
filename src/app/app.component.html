@@ -1,0 +1,7 @@
+<app-header></app-header>
+<div class="page-body" (mousedown)="DropdownComponent.TurnOffAnother()">
+	<router-outlet></router-outlet>
+	<app-footer></app-footer>
+</div>
+<router-outlet name="status"></router-outlet>
+<router-outlet name="login"></router-outlet>

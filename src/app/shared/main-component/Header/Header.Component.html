@@ -1,0 +1,72 @@
+﻿<div class="fixed-top">
+	<div class="nav-fixed-top">
+		<div class="page-header-top" style="background-color: #ffffff">
+			<div class="page-logo">
+				<a href="/"><img src="/assets/logo-ft.png" alt="logo" width="76px" height="50px"/></a>
+				<a href="/"><b>Hệ thống quản lý file</b></a>
+			</div>
+			<div class="page-info">
+				<div class="page-info-content" *ngIf="IsLogin">
+						<span class="public-header-avatar">
+								<img src="/assets/logo-ft.png" alt="logo" width="30"/>
+						</span>
+					<!--<span class="page-info-content-name">-->
+					<!--{{EmployeeInfoService.EmployeeEntity !== undefined ? EmployeeInfoService.EmployeeEntity.DisplayName : "" }}-->
+					<!--</span>-->
+					<span class="btn-group-sm btn-group">
+							<a class="btn btn-primary btn-sm" [routerLink]="['/',{outlets:{login:'wallet'}}]">
+							<i class="glyphicon glyphicon-log-out"></i> Đổi thẻ
+						</a>
+						<a class="btn btn-danger btn-sm" [routerLink]="['/',{outlets:{login:'login'}}]"
+							 [queryParams]="{action: 'logout'}">
+							<i class="glyphicon glyphicon-log-out"></i> Đăng xuất
+						</a>
+						</span>
+				</div>
+				<div class="page-info-content" *ngIf="!IsLogin">
+					<a class="btn btn-primary btn-sm" [routerLink]="['/',{outlets:{login:'login'}}]"
+						 [queryParams]="{action: 'signin'}">
+						<i class="glyphicon glyphicon-log-out"></i> Đăng nhập
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav class="nav navbar-inverse fpt-navbar navbar-expand-md">
+		<button id="menubutton" class="navbar-toggler" type="button" data-toggle="collapse"
+						data-target="#navbarsExampleContainer"
+						aria-controls="navbarToggleExternalContent" aria-expanded="true" aria-label="Toggle navigation" #btn>
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleContainer">
+			<ul class="navbar-nav mr-auto">
+				<li *ngFor="let menu of MenuList"
+						[ngClass]=" (menu.hasSub() ? ' dropdown' : '')">
+					<a class="fpt-nav-link nav-link" routerLinkActive="active-link"
+						 [routerLink]="[menu.Link]" (click)="toggle(btn,menu)">
+						{{menu.Name}}
+						<i class="fa fa-angle-down" *ngIf="menu.hasSub() && menu.Link != 'Fams'"></i>
+					</a>
+					<div class="dropdown-content" *ngIf="menu.hasSub() && menu.Link != 'Fams'">
+						<ul style="list-style: none; padding: 0;">
+							<li class="side-dropdown" *ngFor="let sub of menu.Sub" style="height: 42.2px">
+								<a class="fpt-dropdown-menu fpt-nav-link "
+									 routerLinkActive="active-sublink"
+									 [routerLink]="[sub.Link]" (click)="toggle(btn,sub)">
+									{{sub.Name}}
+									<i class="fa fa-angle-right" style="float: right; top: 4px; position: relative;"
+										 *ngIf="sub.hasSub()"></i>
+								</a>
+								<div class="side-dropdown-content" *ngIf="sub.hasSub()">
+									<a *ngFor="let Subsub of sub.Sub" class="fpt-dropdown-menu fpt-nav-link"
+										 routerLinkActive="active-sublink"
+										 [routerLink]="[Subsub.Link]" (click)="toggle(btn)">{{Subsub.Name}}</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</div>

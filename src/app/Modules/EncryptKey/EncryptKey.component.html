@@ -1,0 +1,74 @@
+<div>
+	<div class="row">
+		<div class="col-3 col-sm-6">
+			<div class="card">
+				<div class="card-header bg-primary">
+				</div>
+				<div class="card-body">
+					<h5 class="card-title">Mã hóa khóa</h5>
+					<p class="card-text">Mã hóa khóa file sử dụng ECIESwithAES-CBC</p>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Chứng thực </label>
+						<div class="col-8">
+							<textarea type="text" class="form-control" rows="6" placeholder="..."
+												[(ngModel)]="encryptFileEntity.certificate"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Khóa </label>
+						<div class="col-8">
+							<input type="text" class="form-control" min="0" placeholder="..."
+										 [(ngModel)]="encryptFileEntity.data">
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<button class="btn btn-primary float-right" (click)="encrypt()">Xử lý</button>
+					<span *ngIf="encryptResult != null">
+						<h5 class="card-title">
+							<button type="button" class="btn btn-outline-primary" (click)="copyToClipBoard(encryptResult.data,true)">
+								Kết quả: {{encryptResult.data.substr(0,10)}}<span *ngIf="encryptResult.data.length > 10">... </span>
+								<i class="fa fa-clipboard"></i>
+							</button>
+						</h5>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="col-3 col-sm-6">
+			<div class="card">
+				<div class="card-header bg-primary">
+				</div>
+				<div class="card-body">
+					<h5 class="card-title">Giải mã hóa khóa</h5>
+					<p class="card-text">Giải mã hóa khóa file sử dụng ECIESwithAES-CBC</p>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Khóa riêng </label>
+						<div class="col-8">
+							<textarea type="text" class="form-control" rows="6" placeholder="..."
+												[(ngModel)]="decryptFileEntity.privateKey"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Khóa </label>
+						<div class="col-8">
+							<input type="text" class="form-control" placeholder="..."
+										 [(ngModel)]="decryptFileEntity.data">
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<button class="btn btn-primary float-right" (click)="decrypt()">Xử lý</button>
+					<span *ngIf="decryptResult != null">
+						<h5 class="card-title">
+							<button type="button" class="btn btn-outline-primary" (click)="copyToClipBoard(decryptResult.data,true)">
+								Kết quả: {{decryptResult.data.substr(0,10)}}<span *ngIf="decryptResult.data.length > 10">... </span>
+								<i class="fa fa-clipboard"></i>
+							</button>
+						</h5>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

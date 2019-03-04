@@ -1,0 +1,11 @@
+﻿<p-gmap #gmap [style]="{'width':'100%','height':height}" [options]="options" [overlays]="[innerValue]"
+				(onMapClick)="handleMapClick($event)" (onOverlayClick)="handleOverlayClick($event)"
+				(onOverlayDragEnd)="handleDragEnd($event)"></p-gmap>
+
+<button type="button" pButton label="Clear" icon="fa-close" (click)="clear()" style="margin-top:10px"></button>
+<button type="button" pButton label="Zoom In" icon="fa-search-plus" (click)="zoomIn(gmap.getMap())"
+				style="margin-top:10px"></button>
+<button type="button" pButton label="Zoom Out" icon="fa-search-minus" (click)="zoomOut(gmap.getMap())"
+				style="margin-top:10px"></button>
+<input type="text" [attr.placeholder]="placeholder" class="form-control"
+			 style="width: calc(100% - 180px); margin-top : 8px" #searchBox/>

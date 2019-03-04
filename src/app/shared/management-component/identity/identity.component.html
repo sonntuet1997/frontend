@@ -1,0 +1,151 @@
+<div>
+	<div class="row">
+		<div class="caption">
+			<span>Danh sách {{title}}</span>
+		</div>
+	</div>
+	<div class="row">
+		<table class="table table-bordered">
+			<thead style="white-space: nowrap">
+			<tr>
+				<th>#</th>
+				<th>Id</th>
+				<th>Tên</th>
+				<th>Người thực hiện</th>
+				<th>Mã chứng thực</th>
+				<th>Trạng thái</th>
+				<th>Người được cấp</th>
+				<th>Tùy chọn</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td></td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td style="text-align: center">
+					<button (click)="Modal.open()" type="button" class="btn btn-success btn-circle"><i
+						class="fa fa-plus fa-1x" aria-hidden="true"></i></button>
+				</td>
+			</tr>
+			<tr *ngFor="let participant of entities; let i = index">
+				<td class="text-center">
+					<!--{{PagingModel.Take * PagingModel.Active + i + 1}}-->
+				</td>
+				<td>
+					{{participant.identityId.substr(0,20)}} ...
+					<!--<span *ngIf="participant['Action'] != 'CREATE'">{{participant.hospitalId}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.hospitalId" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE'">-->
+				</td>
+				<td>
+					{{participant.name}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.issuer.substr(0,20)}} ...
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.certificate.substr(0,20)}} ...
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.state | issueStatus}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.participant}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td style="text-align: center">
+					<div *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">
+						<!--<button type="button" class="btn btn-primary btn-circle"-->
+						<!--(click)="edit(participant,i)">-->
+						<!--<i class="fa fa-edit fa-1x" aria-hidden="true"></i>-->
+						<!--</button>-->
+						<button type="button" class="btn btn-danger btn-circle delete"
+										*ngIf="!isRevoked(participant)"
+										mwlConfirmationPopover [popoverTitle]="'Cảnh báo!'"
+										[popoverMessage]="'Việc thu hồi sẽ không thể khôi phục lại!'"
+										placement="left" (confirm)="revoke(participant.identityId)">
+							<i class="fa fa-trash fa-1x" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">
+						<button type="button" class="btn btn-primary btn-circle"
+										(click)="save(participant)">
+							<i class="fa fa-save fa-1x" aria-hidden="true"></i>
+						</button>
+						<button type="button" class="btn btn-danger btn-circle delete"
+										(click)="cancel(participant)">
+							<i class="fa fa-times fa-1x" aria-hidden="true"></i>
+						</button>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--<app-paging [PagingModel]="PagingModel" [dot]="true" (onChanges)="Search(SearchCityEntity,true)"></app-paging>-->
+<app-modal #Modal>
+	<modal-header>
+		<h4 class="modal-title" id="addTransactionModalLabel">Cấp thẻ</h4>
+		<p class="modal-intro">Vui lòng nhập các thông tin dưới đây.</p>
+	</modal-header>
+	<modal-body>
+		<div class="form-group text-left">
+			<label>Tên thẻ</label>
+			<input [(ngModel)]="identity.userID" type="text" class="form-control">
+		</div>
+		<div class="form-group text-left">
+			<label>Loại thẻ cấp</label>
+			<select class="form-control" [(ngModel)]="participantClass">
+				<option *ngFor="let ParticipantClassName of ParticipantClassNameList" [ngValue]="ParticipantClassName.value">
+					{{ParticipantClassName.name}}
+				</option>
+			</select>
+		</div>
+		<div class="form-group text-left">
+			<label>ID người nhận</label>
+			<input [(ngModel)]="participantID" type="text" class="form-control">
+		</div>
+		<div class="form-group text-left">
+			<app-checkbox [(ngModel)]="identity.options.issuer" #checkbox></app-checkbox>
+			<label (click)="checkbox.toggle()"> Cho phép người này được cấp thẻ cho người khác</label>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<span class="btn-group">
+			<button (click)="issue();" type="submit" class="btn btn-success" data-dismiss="modal">Cấp thẻ</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+		</span>
+	</modal-footer>
+</app-modal>

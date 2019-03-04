@@ -1,0 +1,62 @@
+<div class="row">
+	<div [ngClass]="checkStyle() ? 'col-12' : 'col-3 col-sm-6'" *ngIf="type != 'Decrypt'">
+		<div class="card">
+			<div class="card-header bg-success">
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">Mã hóa file</h5>
+				<p class="card-text">Mã hóa file sử dụng AES-256</p>
+				<p class="card-text">
+					<app-inputfile [DataEntity]="file" (onFileChanged)="fileChange()" [convertBase64]="false" #enc>
+						<button class="btn btn-success" *ngIf="file.name == null">Chọn file cần mã hóa</button>
+						<button class="btn btn-success" *ngIf="file.name != null">{{file.name}}</button>
+					</app-inputfile>
+				</p>
+				<p class="card-text" *ngIf="encryptFileEntity != null">
+					<button class="btn btn-primary" (click)="copyToClipBoard()">
+						<i class="fa fa-clipboard"></i> Khóa : {{encryptFileEntity.key}}
+					</button>
+				</p>
+				<p class="card-text" *ngIf="encryptFileEntity != null">
+					<button class="btn btn-primary" (click)="downloadEncryptedFile()">
+						<i class="fa fa-download"></i> File đã mã hóa
+					</button>
+				</p>
+			</div>
+			<div class="card-footer">
+				<button class="btn btn-success float-right" (click)="encrypt(); status = true" *ngIf="!status">Xử lý</button>
+				<button class="btn btn-success float-right" *ngIf="status"><i class="fa fa-spinner fa-spin"></i> Đang xử lý</button>
+			</div>
+		</div>
+	</div>
+	<div [ngClass]="checkStyle()?'col-12' : 'col-3 col-sm-6'" *ngIf="type != 'Encrypt'">
+		<div class="card">
+			<div class="card-header bg-success">
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">Giải mã file</h5>
+				<p class="card-text">Giải mã file sử dụng AES-256</p>
+				<div class="form-group row">
+					<label for="staticEmail" class="col-2 col-form-label">Khóa: </label>
+					<div class="col-10">
+						<input type="text" class="form-control" id="inputPassword" placeholder="Password"
+									 [(ngModel)]="decryptFileEntity.key">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="staticEmail" class="col-2 col-form-label">File: </label>
+					<div class="col-10">
+						<p class="btn btn-primary form-control" type="text" *ngIf="file2.name == null" (click)="dec.OpenFile()">Chọn file
+							cần giải mã</p>
+						<p class="btn btn-primary form-control" type="text" *ngIf="file2.name != null" (click)="dec.OpenFile()">
+							{{file2.name}}</p>
+					</div>
+				</div>
+				<app-inputfile [DataEntity]="file2" #dec [convertBase64]="false"></app-inputfile>
+			</div>
+			<div class="card-footer">
+				<button class="btn btn-success float-right" (click)="decrypt()">Xử lý</button>
+			</div>
+		</div>
+	</div>
+</div>

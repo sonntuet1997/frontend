@@ -1,0 +1,6 @@
+<span data-toggle="modal" (click)="OpenFile()">
+    <ng-content></ng-content>
+</span>
+<form>
+	<input style="display: none" type="file" name="Id" (change)="LoadFile(file.files)" #file/>
+</form>

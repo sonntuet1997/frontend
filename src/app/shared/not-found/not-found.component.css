@@ -1,0 +1,41 @@
+.bgimg {
+	height: 100%;
+	background: url(/assets/404-background.jpg) center;
+	background-size: cover;
+	position: relative;
+	color: white;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 25px;
+}
+
+.topleft {
+	position: absolute;
+	top: 0;
+	left: 16px;
+}
+
+.bottomleft {
+	position: absolute;
+	bottom: 0;
+	left: 16px;
+}
+
+.middle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	width: 100%;
+	background: rgba(0, 0, 0, .7);
+}
+
+hr {
+	margin: auto;
+	width: 50%;
+}
+
+a {
+	color: white;
+	text-decoration: underline;
+}

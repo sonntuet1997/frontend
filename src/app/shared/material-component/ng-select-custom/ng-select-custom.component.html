@@ -1,0 +1,22 @@
+﻿<ng-select [items]="Entities"
+					 [loading]="LoadingCount || LoadingSearch"
+					 [virtualScroll]="true"
+					 (scrollToEnd)="FetchMore()"
+					 [typeahead]="TypeAhead"
+					 [ngModel]="value"
+					 [bindLabel]="SearchProperty"
+					 (focus)="FirstLoad()"
+					 (change)="EmitChange($event)"
+					 [placeholder]="Placeholder"
+					 [disabled]="Disabled">
+	<ng-template ng-header-tmp>
+		<small *ngIf="!(LoadingCount || LoadingSearch)" class="form-text text-muted">Loaded {{IsSearch? Entities.length
+			-1 : Entities.length}} of {{TotalEntity}}
+		</small>
+		<small *ngIf="LoadingCount || LoadingSearch" class="form-text text-muted">Loading ...</small>
+	</ng-template>
+	<ng-template ng-option-tmp let-item="item" let-index="index">
+		<span *ngIf="!IsSearch || index != 0">{{item[SearchProperty]}}</span>
+		<b *ngIf="IsSearch && index == 0">{{item[SearchProperty]}}</b>
+	</ng-template>
+</ng-select>

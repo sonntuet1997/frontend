@@ -1,0 +1,530 @@
+<div>
+	<modal-header>
+		<h5 class="bg-success" id="add_modal">
+			<span class="btn-group">
+				<button class="btn btn-success" (click)="backward()" [disabled]="previous.size == 0">
+				<i class="far fa-arrow-alt-circle-left fa-2x"></i>
+			</button>
+			<button class="btn btn-success" (click)="forward()" [disabled]="post.size == 0">
+				<i class="far fa-arrow-alt-circle-right fa-2x"></i>
+			</button>
+			</span>
+			<span class="btn-group">
+				<button class="btn btn-success btn-lg" (click)="goToDirectory()"><a style="cursor: default">/</a></button>
+				<button *ngFor="let url of fileMap; let i = index" class="btn btn-success btn-lg" (click)="goToDirectory(i)"><a
+					style="cursor: default">{{url}}</a></button>
+			</span>
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-md-10 col-sm-12" style="max-height:39rem;overflow-y:auto;text-align: center">
+				<div class="row">
+					<div class="card col-md-2" style="height:10rem"
+							 *ngFor="let file of folderBrowserEntities; let i = index"
+							 (contextmenu)="OpenContext($event,cmFolder,file);">
+						<i class="fa fa-8x fa-folder" (dblclick)="Search(file.Src)"></i>
+						<p class="card-title" *ngIf="!file.IsEdit">{{file.Name}}</p>
+						<input type="text" class="form-control form-control-sm" [(ngModel)]="file.Name"
+									 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
+					</div>
+					<div class="card col-md-2" style="height:10rem"
+							 *ngFor="let file of fileBrowserEntities; let i = index"
+							 (contextmenu)="OpenContext($event,cmFile,file);">
+						<label class="custom-checkbox">
+							<input type="checkbox" (click)="toggleFile(file)" [checked]="file.IsSelected">
+							<span class="checkmark"></span>
+						</label>
+						<i class="fa fa-6x fa-file-alt" (dblclick)="viewInfo(file);"
+							 style="margin-top: 1rem; margin-bottom: 1rem"></i>
+						<p class="card-title" *ngIf="!file.IsEdit">{{file.Name}}</p>
+						<input type="text" class="form-control form-control-sm" [(ngModel)]="file.Name"
+									 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
+					</div>
+					<p-contextMenu appendTo="body" #cmFolder [model]="itemsFolder" [style]="{'width':'100px'}"></p-contextMenu>
+					<p-contextMenu appendTo="body" #cmFile [model]="itemsFile" [style]="{'width':'200px'}"></p-contextMenu>
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-12"
+					 style="max-height: 33rem;padding: 0;overflow-y: auto;border-left: 3px solid rgba(0,0,0,.4)">
+				<div class="bg-danger btn-info card card-header">Danh sách file được chọn</div>
+				<ul class="list-group row">
+					<li class="list-group-item col-md-12 col-sm-12"
+							*ngFor="let selected of selectedFileEntities; let i of index">
+						<span (click)="toggleFile(selected)" [class]="'remove-tag '" *ngIf="!Disabled"> &times;</span>
+						{{selected.Src}};
+					</li>
+				</ul>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group" role="group" aria-label="Basic example">
+			<input type="file" (change)="UploadImage($event)" #fileInput placeholder="Upload file..."
+						 style="display: none;"/>
+			<button (click)="AddNewFolder()" class="btn btn-primary">
+				<i class="fa fa-folder-plus"></i> Tạo thư mục
+			</button>
+			<button (click)="isOpenCreate = true" class="btn btn-success">
+				<i class="fa fa-upload" aria-hidden="true"></i> Gửi file
+			</button>
+			<!--<button [routerLink]="['Create']" class="btn btn-success">-->
+			<!--<i class="fa fa-upload" aria-hidden="true"></i> Gửi file-->
+			<!--</button>-->
+			<!--<button (click)="finishTrigger();"-->
+			<!--class="btn btn-success">-->
+			<!--<i class="fa fa-check" aria-hidden="true"></i> Chọn-->
+			<!--</button>-->
+			<button type="button" class="btn btn-danger" data-dismiss="modal">
+				<span><i class="fa fa-times" aria-hidden="true"></i> Hủy</span>
+			</button>
+		</div>
+	</modal-footer>
+</div>
+<app-create-file-encrypted *ngIf="isOpenCreate" [path]="filePath" [isCreate]="true"
+													 (finish)="Search(filePath,true);isOpenCreate = false"></app-create-file-encrypted>
+<app-modal #modal>
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Thông tin file
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							Thông tin file
+						</h5>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Đường dẫn file </label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập đường dẫn file ..."
+											 [(ngModel)]="fileInfo.uid" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Kích thước file (KB)</label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập tên người ..."
+											 [ngModel]="fileInfo.meta_data.size" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Mã hash </label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập tên người ..."
+											 [ngModel]="fileInfo.checksum" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người bắt buộc </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="fileInfo.requiredPeopleList" [Disabled]="true">
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người tùy chọn </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="fileInfo.optionalPeopleList" [Disabled]="true">
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Ngưỡng đạt (cho mã không bắt buộc) </label>
+							<div class="col-8">
+								<input type="number" class="form-control" min="0" placeholder="..."
+											 [(ngModel)]="fileInfo.control_info.thresh_hold" disabled>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Trạng thái file </label>
+							<div class="col-8">
+								<input type="number" class="form-control" min="0" placeholder="..."
+											 [(ngModel)]="fileInfo.threshHold" disabled>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Trạng thái duyệt </label>
+							<div class="col-8">
+								<input type="number" class="form-control" min="0" placeholder="..."
+											 [(ngModel)]="fileInfo.threshHold" disabled>
+							</div>
+						</div>
+						<h5 class="card-title">
+							<span class="text-success" *ngIf="fileInfo.status == 1">Có thể xem nội dung file</span>
+							<span class="text-warning" *ngIf="fileInfo.status == 2">Đang chờ cấp quyền xem nội dung file</span>
+							<span class="text-danger" *ngIf="fileInfo.status == 3">Không có quyền xem nội dung file</span>
+						</h5>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Trạng thái phân quyền </label>
+							<div class="col-8">
+								<div class="TagsInput container" style="background-color:#eceeef;">
+									<span *ngFor="let crypto of fileInfo.cryptoList">
+											<span class="badge badge-success" style="margin-right: 3px" placement="bottom"
+														ngbTooltip="Đã phê duyệt" *ngIf="crypto.encrypted_key != ''">
+												{{crypto.issuer.split('#')[1]}}
+											</span>
+											<span class="badge badge-danger" style="margin-right: 3px" placement="bottom"
+														ngbTooltip="Không phê duyệt" *ngIf="crypto.encrypted_key == ''">
+												{{crypto.issuer.split('#')[1]}}
+											</span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-footer">
+						<div class="btn-group float-right">
+							<button class="btn btn-primary" (click)="modal.close();permissionModal.open()" *ngIf="fileInfo.isAdmin">
+								Phân quyền xem
+							</button>
+							<button class="btn btn-secondary" (click)="modal.close();proposeFileModal.open()"
+											*ngIf="fileInfo.isAdmin">
+								Phê duyệt thay đổi file
+							</button>
+							<button class="btn btn-warning" (click)="modal.close();isOpenEdit = true;editPath = fileInfo.uid"
+											*ngIf="fileInfo.isAdmin">
+								Sửa file
+							</button>
+							<button class="btn btn-danger" *ngIf="fileInfo.isAdmin"
+											mwlConfirmationPopover [popoverTitle]="'Cảnh báo!'"
+											[popoverMessage]="'Bạn có thực sự muốn yêu cầu xóa file?'"
+											placement="left" (confirm)="deleteFile(fileInfo)">
+								Xóa file
+							</button>
+							<button class="btn btn-dark" (click)="modal.close();logFileModal.open();viewLog()"
+											*ngIf="fileInfo.isAdmin">
+								Xem log
+							</button>
+							<button class="btn btn-success" (click)="requestFile()" *ngIf="fileInfo.status != 1">Yêu cầu xem
+								file
+							</button>
+							<button class="btn btn-success" (click)="viewInfo();" *ngIf="fileInfo.status == 1">Xem nội dung
+								file
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="modal.close();finish.next()" class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
+<app-modal #permissionModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Phân quyền xem file
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							Danh sách người dùng
+						</h5>
+						<table class="table">
+							<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Người dùng</th>
+								<th scope="col">Trạng thái</th>
+								<th scope="col">Hành động</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr *ngFor="let t of this.fileInfo.access_info_list; let i = index" style="text-align: center">
+								<td>{{i}}</td>
+								<td>{{t.user.split('#')[1]}}</td>
+								<td>
+									<h6>
+										<span *ngFor="let crypto of t.crypto_list">
+											<span class="badge badge-success" style="margin-right: 3px" placement="bottom"
+														ngbTooltip="Đã phê duyệt" *ngIf="crypto.encrypted_key != ''">
+												{{crypto.issuer.split('#')[1]}}
+											</span>
+											<span class="badge badge-danger" style="margin-right: 3px" placement="bottom"
+														ngbTooltip="Không phê duyệt" *ngIf="crypto.encrypted_key == ''">
+												{{crypto.issuer.split('#')[1]}}
+											</span>
+									</span>
+									</h6>
+								</td>
+								<td>
+									<button type="button" class="btn btn-sm btn-success" *ngIf="needApprove(t.crypto_list)"
+													(click)="approveView(t)">
+										Chấp thuận
+									</button>
+									<button type="button" class="btn btn-sm btn-danger" *ngIf="!needApprove(t.crypto_list)"
+													(click)="rejectView(t)">
+										Từ chối
+									</button>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="permissionModal.close();modal.open()" class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
+<app-modal #viewFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Xem nội dung file
+		</h5>
+	</modal-header>
+	<modal-body>
+		<app-encryptfile [type]="'Decrypt'" [decryptFileEntity]="decryptFileEntity"></app-encryptfile>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="viewFileModal.close();modal.open()" class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
+<app-modal #logFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Log file
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							Log
+						</h5>
+						<table class="table">
+							<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Người dùng</th>
+								<th scope="col">Thời gian</th>
+								<th scope="col">Hành động</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr *ngFor="let t of currentLog; let i = index" style="text-align: center">
+								<td>{{i}}</td>
+								<td>{{t.user.split('#')[1]}}</td>
+								<td>{{t.timestamp| date: 'ss:mm:hh dd-MM-yyyy'}}</td>
+								<td>{{t.action}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="logFileModal.close();modal.open()" class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Trở lại
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
+<app-create-file-encrypted *ngIf="isOpenEdit" [path]="editPath" [isCreate]="false"
+													 (finish)="Search(filePath,true);isOpenEdit = false;modal.open()"></app-create-file-encrypted>
+<app-modal #proposeFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Log file
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							Log
+						</h5>
+						<table class="table">
+							<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Thời gian</th>
+								<th scope="col">Loại</th>
+								<th scope="col">Trạng thái phê duyệt</th>
+								<th scope="col">Hành động</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr *ngFor="let t of fileInfo.propose_list; let i = index" style="text-align: center">
+								<td>{{i}}</td>
+								<td>{{t.timestamp| date: 'ss:mm:hh dd-MM-yyyy'}}</td>
+								<td *ngIf="t.file_action == 'UPDATE'">Cập nhật file</td>
+								<td *ngIf="t.file_action == 'DELETE'">Xóa file</td>
+								<td>
+									<!--<div class="TagsInput container" style="background-color:#eceeef;">-->
+									<span *ngFor="let vote_result of t.proposing_file.vote_result_list">
+												<span class="badge badge-success" [class.badge-success]="vote_result.is_accept"
+															[class.badge-danger]="!vote_result.is_accept"
+															style="margin-right: 3px" placement="bottom"
+															ngbTooltip="Đã phê duyệt">
+													{{vote_result.user.split('#')[1]}}
+												</span>
+										</span>
+									<!--</div>-->
+								</td>
+								<td>
+									<div class="btn-group">
+										<button type="button" class="btn btn-sm btn-primary" *ngIf="t.file_action == 'UPDATE'"
+														(click)="proposeFileModal.close(true);fileProposed.open()">
+											File thay đổi
+										</button>
+										<button type="button" class="btn btn-sm btn-success" *ngIf="needAccept(t)"
+														(click)="approveFileChange(t)">
+											Chấp thuận
+										</button>
+										<button type="button" class="btn btn-sm btn-danger" *ngIf="!needAccept(t)"
+														(click)="rejectFileChange(t)">
+											Từ chối
+										</button>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="proposeFileModal.close();" class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Trở lại
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
+
+
+<app-modal #fileProposed (onClose)="proposeFileModal.open(false)" (onClickOutSide)="proposeFileModal.open(false)">
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Thông tin file sửa đổi
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							Thông tin file
+						</h5>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Đường dẫn file </label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập đường dẫn file ..."
+											 [(ngModel)]="fileInfo.uid" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Kích thước file (KB)</label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập tên người ..."
+											 [ngModel]="fileInfo.meta_data.size" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Mã hash </label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập tên người ..."
+											 [ngModel]="fileInfo.checksum" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người bắt buộc </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="fileInfo.requiredPeopleList" [Disabled]="true">
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người tùy chọn </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="fileInfo.optionalPeopleList" [Disabled]="true">
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Ngưỡng đạt (cho mã không bắt buộc) </label>
+							<div class="col-8">
+								<input type="number" class="form-control" min="0" placeholder="..."
+											 [(ngModel)]="fileInfo.control_info.thresh_hold" disabled>
+							</div>
+						</div>
+						<!--<div class="form-group row">-->
+						<!--<label class="col-4 col-form-label">Trạng thái phân quyền </label>-->
+						<!--<div class="col-8">-->
+						<!--<div class="TagsInput container" style="background-color:#eceeef;">-->
+						<!--<span *ngFor="let crypto of fileInfo.cryptoList">-->
+						<!--<span class="badge badge-success" style="margin-right: 3px" placement="bottom"-->
+						<!--ngbTooltip="Đã phê duyệt" *ngIf="crypto.encrypted_key != ''">-->
+						<!--{{crypto.issuer.split('#')[1]}}-->
+						<!--</span>-->
+						<!--<span class="badge badge-danger" style="margin-right: 3px" placement="bottom"-->
+						<!--ngbTooltip="Không phê duyệt" *ngIf="crypto.encrypted_key == ''">-->
+						<!--{{crypto.issuer.split('#')[1]}}-->
+						<!--</span>-->
+						<!--</span>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="fileProposed.close();" class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Trở lại
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>

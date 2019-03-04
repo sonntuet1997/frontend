@@ -1,0 +1,87 @@
+<div>
+	<div class="row">
+		<div class="caption">
+			<span>Danh sách {{title}}</span>
+		</div>
+	</div>
+	<div class="row">
+		<table class="table table-bordered">
+			<thead style="white-space: nowrap">
+			<tr>
+				<th>#</th>
+				<th>Mã giao dịch</th>
+				<th>Loại giao dịch</th>
+				<th>Người thực hiện</th>
+				<th>Định danh sử dụng</th>
+				<th>Dữ liệu</th>
+				<th>Thời gian thực hiện</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td></td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+				<td>
+					<input class="form-control" type="text" placeholder="Search...">
+				</td>
+			</tr>
+			<tr *ngFor="let participant of entities; let i = index">
+				<td class="text-center">
+					<!--{{PagingModel.Take * PagingModel.Active + i + 1}}-->
+				</td>
+				<td>
+					{{participant.transactionId.substr(0,20)}} ...
+					<!--<span *ngIf="participant['Action'] != 'CREATE'">{{participant.hospitalId}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.hospitalId" type="text"-->
+								 <!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE'">-->
+				</td>
+				<td>
+					{{participant.transactionType}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+								 <!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.participantInvoking}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.identityUsed}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.eventsEmitted}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+				<td>
+					{{participant.transactionTimestamp| date:'HH:mm:ss dd/MM/yyyy'}}
+					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
+					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
+					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--<app-paging [PagingModel]="PagingModel" [dot]="true" (onChanges)="Search(SearchCityEntity,true)"></app-paging>-->

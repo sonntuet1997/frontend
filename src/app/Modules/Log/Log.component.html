@@ -1,0 +1,87 @@
+<div>
+	<div class="row">
+		<div class="caption">
+			<span>Danh sách {{title}}</span>
+		</div>
+	</div>
+	<div class="row">
+		<table class="table table-bordered">
+			<thead style="white-space: nowrap">
+			<tr>
+				<th>#</th>
+				<th>ID</th>
+				<th>Tên</th>
+				<th>Chứng minh thư</th>
+				<th>Tùy chọn</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td></td>
+				<td><input class="form-control" type="text" placeholder="Search..."></td>
+				<td><input class="form-control" type="text" placeholder="Search..."></td>
+				<td><input class="form-control" type="text" placeholder="Search..."></td>
+				<td style="text-align: center">
+					<button (click)="add({Action:'CREATE'})" type="button" class="btn btn-success btn-circle"><i
+						class="fa fa-plus fa-1x" aria-hidden="true"></i></button>
+				</td>
+			</tr>
+			<tr *ngFor="let participant of entities; let i = index">
+				<td class="text-center">
+					<!--{{PagingModel.Take * PagingModel.Active + i + 1}}-->
+				</td>
+				<!--<td>-->
+				<!--&lt;!&ndash;<td class="participant-properties">{{participant.identityCard}}</td>&ndash;&gt;-->
+				<!--{{participant.department}}-->
+				<!--&lt;!&ndash;<span *ngIf="!City.IsEdit">{{City.Code}}</span>&ndash;&gt;-->
+				<!--&lt;!&ndash;<input class="form-control" [(ngModel)]="City.Code" type="text"&ndash;&gt;-->
+				<!--&lt;!&ndash;placeholder="Enter Code..." *ngIf="City.IsEdit">&ndash;&gt;-->
+				<!--</td>-->
+				<td>
+					<span *ngIf="participant['Action'] != 'CREATE'">{{participant.uid}}</span>
+					<input class="form-control" [(ngModel)]="participant.uid" type="text"
+								 placeholder="Nhập id..." *ngIf="participant['Action'] == 'CREATE'">
+				</td>
+				<td>
+					<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>
+					<input class="form-control" [(ngModel)]="participant.name" type="text"
+								 placeholder="Nhập tên..."
+								 *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">
+				</td>
+				<td>
+					<span
+						*ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.identify}}</span>
+					<input class="form-control" [(ngModel)]="participant.identify" type="text"
+								 placeholder="Nhập định danh..."
+								 *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">
+				</td>
+				<td style="text-align: center">
+					<div *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">
+						<button type="button" class="btn btn-primary btn-circle"
+										(click)="edit(participant,i)">
+							<i class="fa fa-edit fa-1x" aria-hidden="true"></i>
+						</button>
+						<!--<button type="button" class="btn btn-danger btn-circle delete"-->
+						<!--mwlConfirmationPopover [popoverTitle]="'Warning!'"-->
+						<!--[popoverMessage]="'Delete action cannot be back!'"-->
+						<!--placement="left" (confirm)="Delete(City)">-->
+						<!--<i class="fa fa-trash fa-1x" aria-hidden="true"></i>-->
+						<!--</button>-->
+					</div>
+					<div *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">
+						<button type="button" class="btn btn-primary btn-circle"
+										(click)="save(participant)">
+							<i class="fa fa-save fa-1x" aria-hidden="true"></i>
+						</button>
+						<button type="button" class="btn btn-danger btn-circle delete"
+										(click)="cancel(participant)">
+							<i class="fa fa-times fa-1x" aria-hidden="true"></i>
+						</button>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--<app-paging [PagingModel]="PagingModel" [dot]="true" (onChanges)="Search(SearchCityEntity,true)"></app-paging>-->

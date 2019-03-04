@@ -1,0 +1,59 @@
+	<app-modal [ModalSize]="ModalSize" #modal>
+		<OpenDiv (click)="writeValue(temp)">
+			<ng-content select="OpenDiv"></ng-content>
+		</OpenDiv>
+		<modal-header>
+			<h5 class="modal-title" id="add_modal" style="color:white">
+				<i class="fa fa-dropbox" aria-hidden="true"> </i>
+				<span *ngFor="let url of fileMap; let i = index"><a style="cursor: default" (click)="goToDirectory(i)">{{url}}</a> / </span>
+			</h5>
+		</modal-header>
+		<modal-body>
+			<div class="row">
+				<div class="col-md-10 col-sm-12" style="max-height:33rem;overflow-y:auto;">
+					<div class="row">
+						<div [File]="file" class="card col-md-2" style="height:10rem"
+								 *ngFor="let file of fileBrowserEntities; let i = index"
+								 (contextmenu)="OpenContext($event,cm,file);">
+							<label class="custom-checkbox" *ngIf="!file.IsDirectory">
+								<input type="checkbox" (click)="toggleFile(file)" [checked]="file.IsSelected">
+								<span class="checkmark"></span>
+							</label>
+							<img class="card-img-top" src="/assets/file.png" name="Img" style="height: 6.5rem;"
+									 (dblclick)="file.IsDirectory ? Search(file.Src) : null">
+							<p class="card-title" *ngIf="!file.IsEdit">{{file.Name}}</p>
+							<input type="text" class="form-control" [(ngModel)]="file.Name"
+										 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
+						</div>
+						<p-contextMenu #cm [model]="items"></p-contextMenu>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-12" style="max-height: 33rem;padding: 0;overflow-y: auto;">
+					<ul class="list-group row">
+						<li class="list-group-item col-md-12 col-sm-12"
+								*ngFor="let selected of selectedFileEntities; let i of index">
+							<span (click)="toggleFile(selected)" [class]="'remove-tag '" *ngIf="!Disabled"> x</span>
+							{{selected.Src}};
+						</li>
+					</ul>
+				</div>
+			</div>
+		</modal-body>
+		<modal-footer>
+			<input type="file" (change)="UploadImage($event)" #fileInput placeholder="Upload file..."
+						 style="display: none;"/>
+			<button (click)="AddNewFolder()" class="btn btn-accent">
+				<i class="fa fa-save" aria-hidden="true"></i> Create Folder
+			</button>
+			<button (click)="TriggerUploadImage()" class="btn btn-info">
+				<i class="fa fa-save" aria-hidden="true"></i> Upload Image
+			</button>
+			<button (click)="finishTrigger(); modal.close()"
+							class="btn btn-success">
+				<i class="fa fa-check" aria-hidden="true"></i> Choose
+			</button>
+			<button type="button" class="btn btn-danger" data-dismiss="modal">
+				<span><i class="fa fa-times" aria-hidden="true"></i> Cancel</span>
+			</button>
+		</modal-footer>
+	</app-modal>

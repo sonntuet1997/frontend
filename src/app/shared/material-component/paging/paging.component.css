@@ -1,0 +1,11 @@
+.page-link {
+	line-height: 1.2rem;
+}
+
+a {
+	cursor: default;
+}
+
+.page-item.active .page-link {
+	z-index: 0;
+}

@@ -1,0 +1,155 @@
+<app-modal #modal (onClose)="finish.next(path)">
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-atom" aria-hidden="true"></i>
+			Tải file lên hệ thống
+		</h5>
+	</modal-header>
+	<modal-body>
+		<app-menu-purchase [NumberSelected]="numberSelected" (change)="numberSelected = $event"
+											 [Navigate]="false" [activeNumber]="activeNumber"></app-menu-purchase>
+		<app-encryptfile [type]="'Encrypt'" [ngStyle]="{display: numberSelected==1?'block':'none'}" [file]="file"
+										 (encryptSuccess)="encryptSuccess($event)"></app-encryptfile>
+		<div class="row" *ngIf="numberSelected==3">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">Kiểm tra</h5>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Đường dẫn file </label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập đường dẫn file ..."
+											 [(ngModel)]="path" [disabled]="!isCreate"/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Kích thước file (KB)</label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập tên người ..."
+											 [ngModel]="file.length" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Mã hash </label>
+							<div class="col-8">
+								<input type="text" class="form-control" placeholder="Nhập tên người ..."
+											 [ngModel]="encryptFileEntity.hash" disabled/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người bắt buộc </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="requiredPeopleList" [Disabled]="true">
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người tùy chọn </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="optionalPeopleList" [Disabled]="true">
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Ngưỡng đạt (cho mã không bắt buộc) </label>
+							<div class="col-8">
+								<input type="number" class="form-control" min="0" placeholder="..."
+											 [(ngModel)]="threshHold" disabled>
+							</div>
+						</div>
+					</div>
+					<div class="card-footer">
+						<button class="btn btn-success float-right" (click)="sendInfo()">Xử lý</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" *ngIf="numberSelected==2">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<!--<h5 class="card-title">Quá trình tải file hoàn tất</h5>-->
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người bắt buộc </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="requiredPeopleList" (onFirstClick)="getPeopleList(inputRequired,true)"
+															 (ChangeTag)="choosePeople($event,true)">
+									<dropdown-input>
+										<input type="text" class="form-control" placeholder="Nhập tên người ..."
+													 [(ngModel)]="inputRequired" [ngModelOptions]="{standalone: true}"
+													 (keyup)="getPeopleList(inputRequired,true)"/>
+									</dropdown-input>
+									<dropdown-content>
+										<li *ngFor="let Item of requiredPeopleList"
+												(click)="Item.IsSelected = Item['IsSelected'] == null ? true : !Item.IsSelected; choosePeople(Item,true)"
+												[ngClass]="{'list-group-item':true,'li-selected' : Item.IsSelected, 'li-active' :  Item.IsActive}"
+												(mouseenter)="Item.IsActive = true" (mouseleave)="Item.IsActive =false">
+											{{Item.name}}
+										</li>
+									</dropdown-content>
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Người tùy chọn </label>
+							<div class="col-8">
+								<app-tag-input [DataList]="optionalPeopleList" (onFirstClick)="getPeopleList(inputOptional,false)"
+															 (ChangeTag)="choosePeople($event,true)">
+									<dropdown-input>
+										<input type="text" class="form-control" placeholder="Nhập tên người ..."
+													 [(ngModel)]="inputOptional" [ngModelOptions]="{standalone: true}"
+													 (keyup)="getPeopleList(inputOptional,false)"/>
+									</dropdown-input>
+									<dropdown-content>
+										<li *ngFor="let Item of optionalPeopleList"
+												(click)="Item.IsSelected = Item['IsSelected'] == null ? true : !Item.IsSelected; choosePeople(Item,false)"
+												[ngClass]="{'list-group-item':true,'li-selected' : Item.IsSelected, 'li-active' :  Item.IsActive}"
+												(mouseenter)="Item.IsActive = true" (mouseleave)="Item.IsActive =false">
+											{{Item.name}}
+										</li>
+									</dropdown-content>
+								</app-tag-input>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-4 col-form-label">Ngưỡng đạt (cho mã không bắt buộc) </label>
+							<div class="col-8">
+								<input type="number" class="form-control" min="0" placeholder="..."
+											 [(ngModel)]="threshHold">
+							</div>
+						</div>
+					</div>
+					<div class="card-footer">
+						<button class="btn btn-success float-right" (click)="shareKey()">Xử lý</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" *ngIf="numberSelected==4">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header bg-success">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">File đã được tải lên thành công</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="modal.close();finish.next()" class="btn btn-success" *ngIf="numberSelected == 4">
+				<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất
+			</button>
+			<button (click)="nextStep()" class="btn btn-success" *ngIf="numberSelected < 4"
+							[disabled]="numberSelected == activeNumber">
+				<i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Tiếp tục
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
