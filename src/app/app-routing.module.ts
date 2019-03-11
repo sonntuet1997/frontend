@@ -26,6 +26,19 @@ import {ShareKeyComponent} from './Modules/ShareKey/ShareKey.component';
 import {UserComponent} from './Modules/User/User.component';
 import {FileEncryptedComponent} from './Modules/FileEncrypted/FileEncrypted.component';
 import {CreateFileEncryptedComponent} from './Modules/FileEncrypted/CreateFileEncrypted/CreateFileEncrypted.component';
+import {AcceptProposedFileEncryptedComponent} from './Modules/Transaction/AcceptProposedFileEncrypted/AcceptProposedFileEncrypted.component';
+import {AcceptReadFileEncryptedComponent} from './Modules/Transaction/AcceptReadFileEncrypted/AcceptReadFileEncrypted.component';
+import {CreateFileComponent} from './Modules/Transaction/CreateFile/CreateFile.component';
+import {CreateUserComponent} from './Modules/Transaction/CreateUser/CreateUser.component';
+import {DeleteFileComponent} from './Modules/Transaction/DeleteFile/DeleteFile.component';
+import {ProposeReadFileEncryptedComponent} from './Modules/Transaction/ProposeReadFileEncrypted/ProposeReadFileEncrypted.component';
+import {RejectProposedFileEncryptedComponent} from './Modules/Transaction/RejectProposedFileEncrypted/RejectProposedFileEncrypted.component';
+import {RejectReadFileEncryptedComponent} from './Modules/Transaction/RejectReadFileEncrypted/RejectReadFileEncrypted.component';
+import {UpdateFileComponent} from './Modules/Transaction/UpdateFile/UpdateFile.component';
+import {UpdateUserComponent} from './Modules/Transaction/UpdateUser/UpdateUser.component';
+import {UpdateFileServerComponent} from './Modules/Transaction/UpdateFileServer/UpdateFileServer.component';
+import {CreateFileServerComponent} from './Modules/Transaction/CreateFileServer/CreateFileServer.component';
+import {FileServerComponent} from './Modules/FileServer/FileServer.component';
 
 const routes: Routes = [
 	{path: '', component: HomeComponent},
@@ -45,6 +58,7 @@ const routes: Routes = [
 			[
 				{path: 'User', component: UserComponent},
 				{path: 'Admin', component: UserComponent},
+				{path: 'FileServer', component: FileServerComponent},
 				{
 					path: 'FileEncrypted', children: [
 						{path: '', component: FileEncryptedComponent},
@@ -84,7 +98,18 @@ const routes: Routes = [
 		path: 'Transactions',
 		children:
 			[
-				// {path: 'CreateDepartment', component: CreateDepartmentComponent},
+				{path: 'AcceptProposedFileEncrypted', component: AcceptProposedFileEncryptedComponent},
+				{path: 'AcceptReadFileEncrypted', component: AcceptReadFileEncryptedComponent},
+				{path: 'CreateFile', component: CreateFileComponent},
+				{path: 'CreateUser', component: CreateUserComponent},
+				{path: 'DeleteFile', component: DeleteFileComponent},
+				{path: 'ProposeReadFileEncrypted', component: ProposeReadFileEncryptedComponent},
+				{path: 'RejectProposedFileEncrypted', component: RejectProposedFileEncryptedComponent},
+				{path: 'RejectReadFileEncrypted', component: RejectReadFileEncryptedComponent},
+				{path: 'UpdateFile', component: UpdateFileComponent},
+				{path: 'UpdateUser', component: UpdateUserComponent},
+				{path: 'UpdateFileServer', component: UpdateFileServerComponent},
+				{path: 'CreateFileServer', component: CreateFileServerComponent},
 				// {path: 'UpdateDepartment', component: UpdateDepartmentComponent},
 				// {path: 'CreateEmployee', component: CreateEmployeeComponent},
 				// {path: 'UpdateEmployee', component: UpdateEmployeeComponent},

@@ -85,6 +85,19 @@ import {MenuPurchaseComponent} from './shared/material-component/MenuPurchase/me
 import {TagsinputComponent} from './shared/material-component/tagsinput/tagsinput.component';
 import {DropdownComponent} from './shared/material-component/dropdown/dropdown.component';
 import {ClickOutsideDirective} from './shared/clickOutside.directive';
+import {AcceptProposedFileEncryptedComponent} from './Modules/Transaction/AcceptProposedFileEncrypted/AcceptProposedFileEncrypted.component';
+import {AcceptReadFileEncryptedComponent} from './Modules/Transaction/AcceptReadFileEncrypted/AcceptReadFileEncrypted.component';
+import {CreateFileComponent} from './Modules/Transaction/CreateFile/CreateFile.component';
+import {CreateUserComponent} from './Modules/Transaction/CreateUser/CreateUser.component';
+import {DeleteFileComponent} from './Modules/Transaction/DeleteFile/DeleteFile.component';
+import {ProposeReadFileEncryptedComponent} from './Modules/Transaction/ProposeReadFileEncrypted/ProposeReadFileEncrypted.component';
+import {RejectProposedFileEncryptedComponent} from './Modules/Transaction/RejectProposedFileEncrypted/RejectProposedFileEncrypted.component';
+import {RejectReadFileEncryptedComponent} from './Modules/Transaction/RejectReadFileEncrypted/RejectReadFileEncrypted.component';
+import {UpdateFileComponent} from './Modules/Transaction/UpdateFile/UpdateFile.component';
+import {UpdateUserComponent} from './Modules/Transaction/UpdateUser/UpdateUser.component';
+import {UpdateFileServerComponent} from './Modules/Transaction/UpdateFileServer/UpdateFileServer.component';
+import {CreateFileServerComponent} from './Modules/Transaction/CreateFileServer/CreateFileServer.component';
+import {FileServerComponent} from './Modules/FileServer/FileServer.component';
 
 @NgModule({
 	declarations: [
@@ -95,7 +108,10 @@ import {ClickOutsideDirective} from './shared/clickOutside.directive';
 		ShareKeyComponent,
 		EncryptFileComponent,
 		EncryptKeyComponent,
-		UserComponent, FileEncryptedComponent, CreateFileEncryptedComponent,
+		UserComponent, FileEncryptedComponent, CreateFileEncryptedComponent, FileServerComponent,
+		AcceptProposedFileEncryptedComponent, AcceptReadFileEncryptedComponent, CreateFileComponent,
+		CreateUserComponent, DeleteFileComponent, ProposeReadFileEncryptedComponent, RejectProposedFileEncryptedComponent,
+		RejectReadFileEncryptedComponent, UpdateFileComponent, UpdateUserComponent, UpdateFileServerComponent, CreateFileServerComponent,
 		// our app
 		HeaderComponent, ModalComponent, CheckboxComponent, MenuPurchaseComponent,
 		BodyComponent, InputfileComponent, DatetimeComponent, TagsinputComponent,

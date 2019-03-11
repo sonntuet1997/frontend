@@ -68,10 +68,18 @@ export class HeaderComponent {
 				case 'NETWORKADMIN': {
 					const Admin = new MenuModel('Quản trị người dùng', 'Participants/Admin');
 					this.MenuList.push(Admin);
+					const FileServer = new MenuModel('Server File', 'Participants/FileServer');
+					this.MenuList.push(FileServer);
 					// const Department = new MenuModel('Sở y tế', 'Participants/Department');
 					// this.MenuList.push(Department);
 					const Transactions = new MenuModel('Lịch sử giao dịch', 'Transactions');
 					this.MenuList.push(Transactions);
+					const UpdateUser = new MenuModel('Cập nhật User', 'Transactions/UpdateUser');
+					Transactions.addSub(UpdateUser);
+					const CreateFileServer = new MenuModel('Tạo Server File', 'Transactions/CreateFileServer');
+					Transactions.addSub(CreateFileServer);
+					const UpdateFileServer = new MenuModel('Cập nhật Server File', 'Transactions/UpdateFileServer');
+					Transactions.addSub(UpdateFileServer);
 					// const CreateDemo = new MenuModel('Tạo Demo', 'Transactions/CreateDemo');
 					// Transactions.addSub(CreateDemo);
 					// const CreateHospital = new MenuModel('Tạo bệnh viện', 'Transactions/CreateHospital');
@@ -105,6 +113,8 @@ export class HeaderComponent {
 					// this.MenuList.push(Department);
 					const Transactions = new MenuModel('Lịch sử giao dịch', 'Transactions');
 					this.MenuList.push(Transactions);
+					const UpdateUser = new MenuModel('Cập nhật User', 'Transactions/UpdateUser');
+					Transactions.addSub(UpdateUser);
 					// const CreateDemo = new MenuModel('Tạo Demo', 'Transactions/CreateDemo');
 					// Transactions.addSub(CreateDemo);
 					// const CreateHospital = new MenuModel('Tạo bệnh viện', 'Transactions/CreateHospital');
@@ -138,8 +148,22 @@ export class HeaderComponent {
 					// this.MenuList.push(Department);
 					const Transactions = new MenuModel('Lịch sử giao dịch', 'Transactions');
 					this.MenuList.push(Transactions);
-					// const CreateDemo = new MenuModel('Tạo Demo', 'Transactions/CreateDemo');
-					// Transactions.addSub(CreateDemo);
+					const AcceptProposedFileEncrypted = new MenuModel('Chấp nhận đề nghị File', 'Transactions/AcceptProposedFileEncrypted');
+					Transactions.addSub(AcceptProposedFileEncrypted);
+					const AcceptReadFileEncrypted = new MenuModel('Chấp nhận yêu cầu đọc File', 'Transactions/AcceptReadFileEncrypted');
+					Transactions.addSub(AcceptReadFileEncrypted);
+					const CreateFile = new MenuModel('Tạo File', 'Transactions/CreateFile');
+					Transactions.addSub(CreateFile);
+					const DeleteFile = new MenuModel('Xóa File', 'Transactions/DeleteFile');
+					Transactions.addSub(DeleteFile);
+					const ProposeReadFileEncrypted = new MenuModel('Yêu cầu đọc File', 'Transactions/ProposeReadFileEncrypted');
+					Transactions.addSub(ProposeReadFileEncrypted);
+					const RejectProposedFileEncrypted = new MenuModel('Từ chối đề nghị File', 'Transactions/RejectProposedFileEncrypted');
+					Transactions.addSub(RejectProposedFileEncrypted);
+					const RejectReadFileEncrypted = new MenuModel('Từ chối đọc File', 'Transactions/RejectReadFileEncrypted');
+					Transactions.addSub(RejectReadFileEncrypted);
+					const UpdateFile = new MenuModel('Cập nhật File', 'Transactions/UpdateFile');
+					Transactions.addSub(UpdateFile);
 					// const CreateHospital = new MenuModel('Tạo bệnh viện', 'Transactions/CreateHospital');
 					// Transactions.addSub(CreateHospital);
 					// const UpdateHospital = new MenuModel('Cập nhật bệnh viện', 'Transactions/UpdateHospital');
@@ -162,6 +186,9 @@ export class HeaderComponent {
 					Management.addSub(Historian);
 					const Identities = new MenuModel('Định danh', 'Management/Identity');
 					Management.addSub(Identities);
+					break;
+				}
+				case 'FileServer': {
 					break;
 				}
 				default:

@@ -14,18 +14,18 @@
 
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {AcceptProposedFileEncryptedService} from './AcceptProposedFileEncrypted.service';
+import {CreateFileServerService} from './CreateFileServer.service';
 import 'rxjs/add/operator/toPromise';
 import {BottomToastsManager} from '../../../shared/CustomToaster';
 
 @Component({
-	selector: 'app-accept-proposed-file-encrypted',
-	templateUrl: './AcceptProposedFileEncrypted.component.html',
-	styleUrls: ['./AcceptProposedFileEncrypted.component.css'],
-	providers: [AcceptProposedFileEncryptedService]
+	selector: 'app-createdemo',
+	templateUrl: './CreateFileServer.component.html',
+	styleUrls: ['./CreateFileServer.component.css'],
+	providers: [CreateFileServerService]
 })
-export class AcceptProposedFileEncryptedComponent implements OnInit {
-	public title = 'Chấp nhận đề nghị File';
+export class CreateFileServerComponent implements OnInit {
+	public title = 'CreateDemo';
 	myForm: FormGroup;
 	transactionId = new FormControl(null, Validators.required);
 	timestamp = new FormControl(null, Validators.required);
@@ -34,7 +34,7 @@ export class AcceptProposedFileEncryptedComponent implements OnInit {
 	public currentId;
 	public errorMessage;
 
-	constructor(private serviceCreateDemo: AcceptProposedFileEncryptedService, public toastr: BottomToastsManager, fb: FormBuilder) {
+	constructor(private serviceCreateDemo: CreateFileServerService, public toastr: BottomToastsManager, fb: FormBuilder) {
 		this.myForm = fb.group({
 			transactionId: this.transactionId,
 			timestamp: this.timestamp

@@ -60,7 +60,7 @@
 	</modal-body>
 	<modal-footer>
 		<div class="btn-group" role="group" aria-label="Basic example">
-			<input type="file" (change)="UploadImage($event)" #fileInput placeholder="Upload file..."
+			<input type="file"  #fileInput placeholder="Upload file..."
 						 style="display: none;"/>
 			<button (click)="AddNewFolder()" class="btn btn-primary">
 				<i class="fa fa-folder-plus"></i> Tạo thư mục
@@ -292,24 +292,24 @@
 		</div>
 	</modal-footer>
 </app-modal>
-<app-modal #viewFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
-	<modal-header>
-		<h5 class="modal-title" style="color:white">
-			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
-			Xem nội dung file
-		</h5>
-	</modal-header>
-	<modal-body>
-		<app-encryptfile [type]="'Decrypt'" [decryptFileEntity]="decryptFileEntity"></app-encryptfile>
-	</modal-body>
-	<modal-footer>
-		<div class="btn-group">
-			<button (click)="viewFileModal.close();modal.open()" class="btn btn-success">
-				<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất
-			</button>
-		</div>
-	</modal-footer>
-</app-modal>
+<!--<app-modal #viewFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">-->
+	<!--<modal-header>-->
+		<!--<h5 class="modal-title" style="color:white">-->
+			<!--<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>-->
+			<!--Xem nội dung file-->
+		<!--</h5>-->
+	<!--</modal-header>-->
+	<!--<modal-body>-->
+		<!--<app-encryptfile [type]="'Decrypt'" [decryptFileEntity]="decryptFileEntity"></app-encryptfile>-->
+	<!--</modal-body>-->
+	<!--<modal-footer>-->
+		<!--<div class="btn-group">-->
+			<!--<button (click)="viewFileModal.close();modal.open()" class="btn btn-success">-->
+				<!--<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất-->
+			<!--</button>-->
+		<!--</div>-->
+	<!--</modal-footer>-->
+<!--</app-modal>-->
 <app-modal #logFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
 	<modal-header>
 		<h5 class="modal-title" style="color:white">
@@ -340,7 +340,7 @@
 							<tr *ngFor="let t of currentLog; let i = index" style="text-align: center">
 								<td>{{i}}</td>
 								<td>{{t.user.split('#')[1]}}</td>
-								<td>{{t.timestamp| date: 'ss:mm:hh dd-MM-yyyy'}}</td>
+								<td>{{t.timestamp| date: 'hh:mm:ss dd-MM-yyyy'}}</td>
 								<td>{{t.action}}</td>
 							</tr>
 							</tbody>
@@ -364,7 +364,7 @@
 	<modal-header>
 		<h5 class="modal-title" style="color:white">
 			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
-			Log file
+			Thay đổi File
 		</h5>
 	</modal-header>
 	<modal-body>
@@ -375,7 +375,7 @@
 					</div>
 					<div class="card-body">
 						<h5 class="card-title">
-							Log
+							Thay đổi File
 						</h5>
 						<table class="table">
 							<thead>
@@ -390,7 +390,7 @@
 							<tbody>
 							<tr *ngFor="let t of fileInfo.propose_list; let i = index" style="text-align: center">
 								<td>{{i}}</td>
-								<td>{{t.timestamp| date: 'ss:mm:hh dd-MM-yyyy'}}</td>
+								<td>{{t.timestamp| date: 'hh:mm:ss dd-MM-yyyy'}}</td>
 								<td *ngIf="t.file_action == 'UPDATE'">Cập nhật file</td>
 								<td *ngIf="t.file_action == 'DELETE'">Xóa file</td>
 								<td>

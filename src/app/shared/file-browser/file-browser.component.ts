@@ -263,12 +263,13 @@ export class FileBrowserComponent implements OnInit, ControlValueAccessor {
 					this.FileEntity.FileName = file.name;
 					this.FileEntity.Path = this.fileMap.join('/');
 					this.FileEntity.Content = data;
-					this.FileService.UploadFile(this.FileEntity).subscribe(res => {
-						if (res) {
-							this.toastr.ShowSuccess();
-							this.Search(this.fileMap.join('/'));
-						}
-					})
+					console.error('chua cai dat');
+					// this.FileService.UploadFile(this.FileEntity).subscribe(res => {
+					// 	if (res) {
+					// 		this.toastr.ShowSuccess();
+					// 		this.Search(this.fileMap.join('/'));
+					// 	}
+					// })
 				});
 			} else {
 				return

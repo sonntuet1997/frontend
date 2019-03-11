@@ -34,18 +34,21 @@ import {EncryptKeyEntity} from '../../EncryptKey/EncryptKey.entity';
 import {DataEntity} from '../../../shared/material-component/inputfile/Data.Entity';
 import {CreateFileService} from '../../Transaction/CreateFile/CreateFile.service';
 import {UpdateFileService} from '../../Transaction/UpdateFile/UpdateFile.service';
+import {ManagementService} from '../../../shared/management-component/management.service';
+import {EncryptFileService} from '../../EncryptFile/EncryptFile.service';
 
 @Component({
 	selector: 'app-create-file-encrypted',
 	templateUrl: './CreateFileEncrypted.component.html',
 	styleUrls: ['./CreateFileEncrypted.component.css'],
 	providers: [CreateFileEncryptedService, CreateUserService, UpdateUserService, CreateFileService,
-		UserService, QueryService, ShareKeyService, EncryptKeyService, IdentityService, UpdateFileService]
+		UserService, QueryService, ShareKeyService, EncryptKeyService, IdentityService, UpdateFileService, FileService]
 })
 export class CreateFileEncryptedComponent extends IComponent<Employee> implements AfterViewInit {
 	public numberSelected = 1;
 	public activeNumber = 1;
 	@ViewChild('modal') modal;
+	@ViewChild('appEncrypted') appEncrypted;
 	public inputRequired = '';
 	public inputOptional = '';
 	public requiredPeopleList: Array<any> = [];
@@ -233,19 +236,46 @@ export class CreateFileEncryptedComponent extends IComponent<Employee> implement
 		};
 		if (this.isCreate) {
 			this.CreateFileService.addTransaction(x).subscribe(t => {
-				this.activeNumber = 4;
-				this.toastr.ShowSuccess('Tải file lên hệ thống thành công');
+				this.upload(x.uid, x.checksum, false);
 			}, error1 => {
 				this.toastr.ShowError(error1);
 			});
 		} else {
 			this.UpdateFileService.addTransaction(x).subscribe(t => {
-				this.activeNumber = 4;
-				this.toastr.ShowSuccess('File được tải lên hệ thống thành công!\n Đang chờ phê duyệt');
+				this.upload(x.uid, x.checksum, true);
 			}, error1 => {
 				this.toastr.ShowError(error1);
 			});
 		}
+	}
+
+
+	upload(src, hash, isUpdate) {
+		const ek = new EncryptKeyEntity();
+		ek.privateKey = ManagementService.privateKey;
+		const t: any = {
+			certificate: ManagementService.publicKey,
+			src: src,
+			hash: hash
+		};
+		t.message = JSON.stringify(t);
+		ek.data = t.message;
+		this.encryptKeyService.sign(ek).subscribe(data => {
+			t.sign = data.sign;
+			const formData: FormData = new FormData();
+			formData.append('json', JSON.stringify(t));
+			formData.append('data', this.appEncrypted.data);
+			this.FileService.upload(formData).subscribe(v => {
+				this.activeNumber = 4;
+				if (isUpdate) {
+					this.toastr.ShowSuccess('File được tải lên hệ thống thành công!\n Đang chờ phê duyệt');
+				} else {
+					this.toastr.ShowSuccess('Tải file lên hệ thống thành công');
+				}
+			}, error1 => {
+				this.toastr.ShowError(error1);
+			});
+		});
 	}
 
 	ngAfterViewInit(): void {

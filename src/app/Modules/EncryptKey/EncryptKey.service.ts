@@ -38,4 +38,12 @@ export class EncryptKeyService {
 		return this.dataService.post('/tool-api/' + this.NAMESPACE + '/decrypt', encryptFileEntity);
 	}
 
+	public sign(encryptFileEntity: EncryptKeyEntity): Observable<EncryptKeyEntity> {
+		return this.dataService.post('/tool-api/' + this.NAMESPACE + '/sign', encryptFileEntity);
+	}
+
+	public verify(encryptFileEntity: EncryptKeyEntity): Observable<EncryptKeyEntity> {
+		return this.dataService.post('/tool-api/' + this.NAMESPACE + '/verify', encryptFileEntity);
+	}
+
 }

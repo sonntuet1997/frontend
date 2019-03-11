@@ -9,7 +9,7 @@
 		<app-menu-purchase [NumberSelected]="numberSelected" (change)="numberSelected = $event"
 											 [Navigate]="false" [activeNumber]="activeNumber"></app-menu-purchase>
 		<app-encryptfile [type]="'Encrypt'" [ngStyle]="{display: numberSelected==1?'block':'none'}" [file]="file"
-										 (encryptSuccess)="encryptSuccess($event)"></app-encryptfile>
+										 (encryptSuccess)="encryptSuccess($event)" #appEncrypted></app-encryptfile>
 		<div class="row" *ngIf="numberSelected==3">
 			<div class="col-12">
 				<div class="card">

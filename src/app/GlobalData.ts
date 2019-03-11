@@ -11,6 +11,7 @@ export function GetParticipantEnum(res) {
 
 export const ParticipantClassNameList = [
 	{value: 'org.hyperledger.composer.system.NetworkAdmin', name: 'Quản trị hệ thống'},
+	{value: 'manager.FileServer', name: 'File Server'},
 	{value: 'manager.User', name: 'Quản trị người dùng'},
 	{value: 'manager.User', name: 'Người dùng'}
 ];
@@ -58,6 +59,7 @@ export const RoleList = [
 	{value: 'User', name: 'Nhân viên'},
 	{value: 'Manager', name: 'Quản trị người dùng'},
 	{value: 'NetworkAdmin', name: 'Quản trị hệ thống'},
+	{value: 'FileServer', name: 'File Server'},
 ];
 
 

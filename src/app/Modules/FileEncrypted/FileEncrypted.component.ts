@@ -42,6 +42,7 @@ import {ActionList} from '../../GlobalData';
 import {AcceptProposedFileEncryptedService} from '../Transaction/AcceptProposedFileEncrypted/AcceptProposedFileEncrypted.service';
 import {RejectProposedFileEncryptedService} from '../Transaction/RejectProposedFileEncrypted/RejectProposedFileEncrypted.service';
 import {DeleteFileService} from '../Transaction/DeleteFile/DeleteFile.service';
+import {EncryptFileService} from '../EncryptFile/EncryptFile.service';
 
 @Component({
 	selector: 'app-file-encrypted',
@@ -49,7 +50,7 @@ import {DeleteFileService} from '../Transaction/DeleteFile/DeleteFile.service';
 	styleUrls: ['./FileEncrypted.component.css'],
 	providers: [FileEncryptedService, CreateUserService, UpdateUserService, ManagementService, ProposeReadFileEncryptedService,
 		AcceptReadFileEncryptedService, RejectReadFileEncryptedService, EncryptKeyService, IdentityService, ShareKeyService, LogService,
-		AcceptProposedFileEncryptedService, RejectProposedFileEncryptedService, DeleteFileService
+		AcceptProposedFileEncryptedService, RejectProposedFileEncryptedService, DeleteFileService, EncryptFileService
 	]
 })
 export class FileEncryptedComponent extends IComponent<Employee> implements OnInit {
@@ -62,7 +63,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	itemsFile: MenuItem[];
 	@ViewChild('fileInput') fileInput;
 	@ViewChild('modal') modal;
-	@ViewChild('viewFileModal') viewFileModal;
+	// @ViewChild('viewFileModal') viewFileModal;
 	fileMap: string[];
 	filePath = '';
 	selectedFileEntities: FileBrowserEntity[] = [];
@@ -92,7 +93,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 							private RejectReadFileEncryptedService: RejectReadFileEncryptedService, public IdentityService: IdentityService,
 							public ShareKeyService: ShareKeyService, public LogService: LogService, public DeleteFileService: DeleteFileService,
 							public AcceptProposedFileEncryptedService: AcceptProposedFileEncryptedService,
-							public RejectProposedFileEncryptedService: RejectProposedFileEncryptedService
+							public RejectProposedFileEncryptedService: RejectProposedFileEncryptedService, public EncryptFileService: EncryptFileService
 	) {
 		super(toastr);
 		this.Search('/', true);
@@ -332,29 +333,6 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		});
 	}
 
-	UploadImage(event) {
-		const fileList: FileList = event.target.files;
-		if (fileList.length > 0) {
-			const file: File = fileList[0];
-			const ConfirmBox = confirm('Are you sure about upload this image?');
-			if (ConfirmBox) {
-				this.getBase64(file).then((data: string) => {
-					this.FileEntity.FileName = file.name;
-					this.FileEntity.Path = this.fileMap.join('/');
-					this.FileEntity.Content = data;
-					this.FileService.UploadFile(this.FileEntity).subscribe(res => {
-						if (res) {
-							this.toastr.ShowSuccess();
-							this.Search(this.fileMap.join('/'));
-						}
-					})
-				});
-			} else {
-				return
-			}
-		}
-	}
-
 	viewInfo() {
 		const check = new EventEmitter();
 		const arr = [];
@@ -365,15 +343,83 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			if (arr.length == cryptoList.length) {
 				const content = arr.map(t => JSON.parse(t.data));
 				this.ShareKeyService.decrypt(content).subscribe(y => {
-					this.decryptFileEntity = new EncryptFileEntity();
-					this.decryptFileEntity.key = y;
-					this.modal.close();
-					this.viewFileModal.open();
+					const ek = new EncryptKeyEntity();
+					ek.privateKey = ManagementService.privateKey;
+					const t: any = {
+						certificate: ManagementService.publicKey,
+						src: this.fileInfo.uid,
+						hash: this.fileInfo.checksum
+					};
+					t.message = JSON.stringify(t);
+					ek.data = t.message;
+					this.EncryptKeyService.sign(ek).subscribe(data => {
+						t.sign = data.sign;
+						let formData: FormData = new FormData();
+						formData.append('json', JSON.stringify(t));
+						this.FileService.download(formData).subscribe(x => {
+							formData = new FormData();
+							formData.append('key', y);
+							formData.append('data', x);
+							const q = this.fileInfo.uid.split('/');
+							this.EncryptFileService.decrypt(formData).subscribe(x => {
+								if (window.navigator.msSaveOrOpenBlob) {
+									window.navigator.msSaveBlob(x, q[q.length - 1]);
+								} else {
+									const elem = window.document.createElement('a');
+									elem.href = window.URL.createObjectURL(x);
+									elem.download = q[q.length - 1];
+									document.body.appendChild(elem);
+									elem.click();
+									document.body.removeChild(elem);
+								}
+								this.FileService.dataService.turnOffModal();
+							}, error1 => {
+								this.toastr.ShowError(error1);
+							});
+						});
+					});
+					// this.modal.close();
+					// this.viewFileModal.open();
 				}, error1 => {
-					this.decryptFileEntity = new EncryptFileEntity();
-					this.decryptFileEntity.key = error1.error.text;
-					this.modal.close();
-					this.viewFileModal.open();
+					// this.decryptFileEntity = new EncryptFileEntity();
+					// this.decryptFileEntity.key = error1.error.text;
+					const ek = new EncryptKeyEntity();
+					ek.privateKey = ManagementService.privateKey;
+					const t: any = {
+						certificate: ManagementService.publicKey,
+						src: this.fileInfo.uid,
+						hash: this.fileInfo.checksum
+					};
+					t.message = JSON.stringify(t);
+					ek.data = t.message;
+					this.EncryptKeyService.sign(ek).subscribe(data => {
+						t.sign = data.sign;
+						let formData: FormData = new FormData();
+						formData.append('json', JSON.stringify(t));
+						this.FileService.download(formData).subscribe(x => {
+							formData = new FormData();
+							formData.append('key', error1.error.text);
+							formData.append('data', x);
+							const q = this.fileInfo.uid.split('/');
+							this.EncryptFileService.decrypt(formData).subscribe(x => {
+								if (window.navigator.msSaveOrOpenBlob) {
+									window.navigator.msSaveBlob(x, q[q.length - 1]);
+								} else {
+									const elem = window.document.createElement('a');
+									elem.href = window.URL.createObjectURL(x);
+									elem.download = q[q.length - 1];
+									document.body.appendChild(elem);
+									elem.click();
+									document.body.removeChild(elem);
+								}
+								this.FileService.dataService.turnOffModal();
+							}, error1 => {
+								this.toastr.ShowError(error1);
+							});
+						});
+					});
+					// this.modal.close();
+					// this.viewFileModal.open();
 				})
 			}
 		});
@@ -580,5 +626,23 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		});
 	}
 
-
+	download() {
+		const formData: FormData = new FormData();
+		formData.append('src', '8ee19d8d9946e93901dd7af5fe039f2778d116a8ieltS.odt');
+		this.FileService.download(formData).subscribe(x => {
+			if (window.navigator.msSaveOrOpenBlob) {
+				window.navigator.msSaveBlob(x, 'dasdas');
+			} else {
+				const elem = window.document.createElement('a');
+				elem.href = window.URL.createObjectURL(x);
+				elem.download = 'asdasdasd';
+				document.body.appendChild(elem);
+				elem.click();
+				document.body.removeChild(elem);
+			}
+			this.FileService.dataService.turnOffModal();
+		}, error1 => {
+			this.toastr.ShowError(error1);
+		});
+	}
 }
