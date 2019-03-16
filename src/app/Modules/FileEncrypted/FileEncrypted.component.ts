@@ -62,6 +62,8 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	itemsFolder: MenuItem[];
 	itemsFile: MenuItem[];
 	@ViewChild('fileInput') fileInput;
+	@ViewChild('proposeFileModal') proposeFileModal;
+	@ViewChild('fileProposed') fileProposed;
 	@ViewChild('modal') modal;
 	// @ViewChild('viewFileModal') viewFileModal;
 	fileMap: string[];
@@ -76,6 +78,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	public previous = new Stack<any>();
 	public post = new Stack<any>();
 	fileInfo: any = {meta_data: {}, requiredPeopleList: [], optionalPeopleList: [], control_info: {}};
+	proposedFile: any = {meta_data: {}, requiredPeopleList: [], optionalPeopleList: [], control_info: {}};
 	isOpenCreate = false;
 	isOpenEdit = false;
 	editPath = '';
@@ -146,7 +149,11 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	getFileDetail(isOpened?) {
-		this.fileEncryptedService.getparticipant(this.CurrentFile.Src).subscribe(v => {
+		let t = this.CurrentFile.Src.split('/');
+		t = t.map(x => encodeURIComponent(x));
+		const src = t.join('/');
+		this.fileEncryptedService.getparticipant(src).subscribe(v => {
+			v.uid = this.decodeSrc(v.uid);
 			v.meta_data = JSON.parse(v.meta_data);
 			v.requiredPeopleList = v.control_info.required_list.map(x => ({name: x.split('#')[1], IsSelected: true}));
 			v.optionalPeopleList = v.control_info.optional_list.map(x => ({name: x.split('#')[1], IsSelected: true}));
@@ -183,10 +190,15 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 				this.post = new Stack<any>();
 				this.previous.push(this.filePath);
 			}
+			Url = this.decodeSrc(Url);
+			x = x.map(y => {
+				y.uid = this.decodeSrc(y.uid);
+				return y;
+			});
 			this.filePath = Url[Url.length - 1] == '/' ? Url : Url + '/';
+			this.filePath = this.filePath[0] == '/' ? this.filePath : '/' + this.filePath;
 			let final = x.filter(t => {
-				const inde = t.uid.indexOf(this.filePath);
-				if (inde != 0) {
+				if (t.uid.indexOf(this.filePath) != 0) {
 					return false;
 				}
 				return t.uid.substr(Url.length).indexOf('/') < 0;
@@ -203,19 +215,19 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			});
 			this.folderBrowserEntities = [];
 			final = x.filter(t => {
-				const inde = t.uid.indexOf(this.filePath);
-				if (inde != 0) {
+				if (t.uid.indexOf(this.filePath) != 0) {
 					return false;
 				}
 				return t.uid.substr(Url.length).indexOf('/') > -1;
 			});
-			this.folderBrowserEntities = final.map(k => {
+			this.folderBrowserEntities = [];
+			final.forEach(k => {
 				const t = new FileBrowserEntity();
 				const a = k.uid.substr(Url.length).split('/');
 				t.Name = a[0];
 				t.Src = Url + t.Name + '/';
 				t.IsEdit = false;
-				return t;
+				if (!this.folderBrowserEntities.some(f => f.Name == t.Name)) { this.folderBrowserEntities.push(t); }
 			});
 			let end = Url.length;
 			if (Url[end - 1] == '/') {
@@ -434,7 +446,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	requestFile() {
-		const propose = {uid: this.CurrentFile.Src};
+		const propose = {uid: this.encodeSrc(this.CurrentFile.Src)};
 		this.ProposeReadFileEncryptedService.addTransaction(propose).subscribe(() => {
 			this.toastr.ShowSuccess('Thành công');
 		});
@@ -521,7 +533,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 								}
 							});
 							const trans = {
-								uid: this.CurrentFile.Src,
+								uid: this.encodeSrc(this.CurrentFile.Src),
 								'access_info': {
 									user: t.user,
 									crypto_list: list
@@ -566,7 +578,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 				}
 			});
 			const trans = {
-				uid: this.CurrentFile.Src,
+				uid: this.encodeSrc(this.CurrentFile.Src),
 				'access_info': {
 					user: t.user,
 					crypto_list: crypto_list
@@ -579,7 +591,8 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	viewLog() {
-		const a = {where: {file: 'resource:' + this.fileInfo['$class'] + '#' + encodeURI(this.fileInfo.uid)}};
+		const src = this.encodeSrc(this.fileInfo.uid);
+		const a = {where: {file: 'resource:' + this.fileInfo['$class'] + '#' + encodeURI(src)}};
 		this.LogService.getAll(a).subscribe(x => {
 			this.currentLog = x.sort((a, b) => {
 				return new Date(a.timestamp).getMilliseconds() - new Date(b.timestamp).getMilliseconds();
@@ -594,7 +607,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	approveFileChange(t) {
 		const x = {
 			timestamp_id: t.timestamp,
-			uid: this.fileInfo.uid
+			uid: this.encodeSrc(this.fileInfo.uid)
 		};
 		this.AcceptProposedFileEncryptedService.addTransaction(x).subscribe(b => {
 			this.getFileDetail(true);
@@ -605,7 +618,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	rejectFileChange(t) {
 		const x = {
 			timestamp_id: t.timestamp,
-			uid: this.fileInfo.uid
+			uid: this.encodeSrc(this.fileInfo.uid)
 		};
 		this.RejectProposedFileEncryptedService.addTransaction(x).subscribe(b => {
 			this.getFileDetail(true);
@@ -619,7 +632,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	deleteFile(t) {
-		const e = {uid: t.uid};
+		const e = {uid: this.encodeSrc(t.uid)};
 		this.DeleteFileService.addTransaction(e).subscribe(x => {
 			this.getFileDetail(true);
 			this.toastr.ShowSuccess('Thành công!');
@@ -644,5 +657,58 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		}, error1 => {
 			this.toastr.ShowError(error1);
 		});
+	}
+
+
+	encodeSrc(Src) {
+		let t = Src.split('/');
+		t = t.map(x => encodeURIComponent(x));
+		return t.join('/');
+	}
+
+	decodeSrc(Src) {
+		let t = Src.split('/');
+		t = t.map(x => decodeURIComponent(x));
+		return t.join('/');
+	}
+
+	openProposedFile(t) {
+		this.proposedFile = t.proposing_file;
+		this.proposedFile.uid = this.decodeSrc(this.proposedFile.uid);
+		this.proposedFile.meta_data = JSON.parse(this.proposedFile.meta_data);
+		this.proposedFile.requiredPeopleList = this.proposedFile.control_info.required_list.map(x => ({
+			name: x.split('#')[1],
+			IsSelected: true
+		}));
+		this.proposedFile.optionalPeopleList = this.proposedFile.control_info.optional_list.map(x => ({
+			name: x.split('#')[1],
+			IsSelected: true
+		}));
+		// this.ManagementService.ping().subscribe(res => {
+		// 	this.currentPing = res;
+		// 	v.isAdmin = v.control_info.required_list.some(x => x == 'resource:' + this.currentPing.participant)
+		// 		|| v.control_info.optional_list.some(x => x == 'resource:' + this.currentPing.participant);
+		// 	v.status = 1;
+		// 	this.fileInfo = v;
+		// 	const accessInfo = v.access_info_list.find(t => t.user == 'resource:' + res.participant);
+		// 	if (accessInfo == null) {
+		// 		v.status = 3;
+		// 	} else {
+		// 		const cryptoList = accessInfo.crypto_list.filter(t => t.identity == 'resource:' + res.identity);
+		// 		v.cryptoList = cryptoList;
+		// 		let check = v.control_info.required_list.every(s => {
+		// 			return cryptoList.some(k => k.issuer == s);
+		// 		});
+		// 		check = check && (v.control_info.optional_list.filter(s => {
+		// 			return cryptoList.some(k => k.issuer == s);
+		// 		}).length >= v.control_info.thresh_hold);
+		// 		v.status = check ? 1 : 2;
+		// 	}
+		// 	if (!isOpened) {
+		// 		this.modal.open();
+		// 	}
+		// });
+		this.proposeFileModal.close(true);
+		this.fileProposed.open();
 	}
 }

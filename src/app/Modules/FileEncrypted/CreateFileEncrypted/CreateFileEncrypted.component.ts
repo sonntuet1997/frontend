@@ -35,7 +35,6 @@ import {DataEntity} from '../../../shared/material-component/inputfile/Data.Enti
 import {CreateFileService} from '../../Transaction/CreateFile/CreateFile.service';
 import {UpdateFileService} from '../../Transaction/UpdateFile/UpdateFile.service';
 import {ManagementService} from '../../../shared/management-component/management.service';
-import {EncryptFileService} from '../../EncryptFile/EncryptFile.service';
 
 @Component({
 	selector: 'app-create-file-encrypted',
@@ -227,8 +226,11 @@ export class CreateFileEncryptedComponent extends IComponent<Employee> implement
 	}
 
 	sendInfo() {
+		let convert = this.path.split('/');
+		convert = convert.map(x => encodeURIComponent(x));
+		const path = convert.join('/');
 		const x = {
-			uid: this.path,
+			uid: path,
 			access_info_list: this.access_info,
 			control_info: this.control_info,
 			meta_data: JSON.stringify({size: this.file.length}),
