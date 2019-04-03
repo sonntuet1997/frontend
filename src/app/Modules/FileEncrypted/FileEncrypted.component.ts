@@ -213,7 +213,6 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 				t.Src = k.uid;
 				return t;
 			});
-			this.folderBrowserEntities = [];
 			final = x.filter(t => {
 				if (t.uid.indexOf(this.filePath) != 0) {
 					return false;

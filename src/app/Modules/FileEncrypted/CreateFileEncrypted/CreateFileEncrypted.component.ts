@@ -113,7 +113,7 @@ export class CreateFileEncryptedComponent extends IComponent<Employee> implement
 				for (let i = 0; i < requiredList.length; i++) {
 					const b = requiredList[i];
 					const c = [];
-					const a = {user: 'resource:manager.User#' + b.uid, crypto_list: c};
+					const a = {user: 'resource:manager.User#' + encodeURIComponent(b.uid), crypto_list: c};
 					const k = t.filter(u => u.participant == a.user && u.state.toString() == 'ACTIVATED');
 					if (k.length == 0) {
 						this.toastr.ShowError('Người dùng không có định danh hợp lệ');
