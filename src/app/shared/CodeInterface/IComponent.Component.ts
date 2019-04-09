@@ -18,7 +18,7 @@ export class IComponent<T extends Object> {
 		// SearchEntity.Take = this.PagingModel.Take;
 		this.getService.getAll().subscribe(p => {
 			this.entities = p;
-			this.toastr.ShowSuccess();
+			this.toastr.ShowSuccess('Tải dữ liệu thành công');
 		}, e => {
 			this.toastr.ShowError(e);
 		});

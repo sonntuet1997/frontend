@@ -56,7 +56,7 @@ export const TrueFalseList = [
 ];
 
 export const RoleList = [
-	{value: 'User', name: 'Nhân viên'},
+	{value: 'User', name: 'Người dùng'},
 	{value: 'Manager', name: 'Quản trị người dùng'},
 	{value: 'NetworkAdmin', name: 'Quản trị hệ thống'},
 	{value: 'FileServer', name: 'File Server'},

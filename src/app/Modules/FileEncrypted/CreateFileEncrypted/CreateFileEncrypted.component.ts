@@ -73,7 +73,7 @@ export class CreateFileEncryptedComponent extends IComponent<Employee> implement
 			this.totalWait--;
 			if (this.totalWait == 0) {
 				this.activeNumber = 3;
-				this.toastr.ShowSuccess('Thành công');
+				this.toastr.ShowSuccess();
 			}
 		})
 	}
@@ -222,7 +222,7 @@ export class CreateFileEncryptedComponent extends IComponent<Employee> implement
 			this.path = this.path + this.file.name;
 		}
 		this.activeNumber = 2;
-		this.toastr.ShowSuccess('Thành công');
+		this.toastr.ShowSuccess();
 	}
 
 	sendInfo() {

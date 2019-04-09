@@ -214,9 +214,14 @@ export class HeaderComponent {
 			}
 			this.ManagementService.reset();
 		}, error => {
+			console.log(error);
 			const er = error.error.error;
 			const erArr = er.message.split(er.name);
-			this.toastr.ShowError(erArr[erArr.length - 1]);
+			if (error.status == 401) {
+				this.toastr.ShowWarning('Vui lòng đăng nhập để sử dụng hệ thống');
+			} else {
+				this.toastr.ShowError(erArr[erArr.length - 1]);
+			}
 		});
 		// let [MODULE] = new MenuModel("[MODULE]", "[MODULE]"); this.MenuList.push([MODULE]);
 		// [END]

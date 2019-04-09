@@ -11,25 +11,25 @@ export class BottomToastsManager {
 
 	ShowSuccess(message?: any) {
 		if (message != null && typeof message !== 'string') {
-			this.toastrService.success('Thành công!', 'Success');
+			this.toastrService.success('', 'Thành công');
 		} else {
-			this.toastrService.success(message, 'Success');
+			this.toastrService.success(message, 'Thành công');
 		}
 	}
 
 	ShowWarning(message: any) {
-		this.toastrService.warning(message, 'Warning');
+		this.toastrService.warning(message, 'Cảnh báo');
 	}
 
 	ShowError(message: any) {
 		if (typeof message != 'string') {
-			this.toastrService.error(message.error, 'Error');
+			this.toastrService.error(message.error, 'Lỗi');
 		} else {
-			this.toastrService.error(message, 'Error');
+			this.toastrService.error(message, 'Lỗi');
 		}
 	}
 
 	ShowInfo(message: any) {
-		this.toastrService.info(message, 'Information');
+		this.toastrService.info(message, 'Thông báo');
 	}
 }

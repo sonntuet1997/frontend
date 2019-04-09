@@ -43,6 +43,7 @@ import {AcceptProposedFileEncryptedService} from '../Transaction/AcceptProposedF
 import {RejectProposedFileEncryptedService} from '../Transaction/RejectProposedFileEncrypted/RejectProposedFileEncrypted.service';
 import {DeleteFileService} from '../Transaction/DeleteFile/DeleteFile.service';
 import {EncryptFileService} from '../EncryptFile/EncryptFile.service';
+import {WalletService} from '../../shared/wallet/wallet.service';
 
 @Component({
 	selector: 'app-file-encrypted',
@@ -50,7 +51,7 @@ import {EncryptFileService} from '../EncryptFile/EncryptFile.service';
 	styleUrls: ['./FileEncrypted.component.css'],
 	providers: [FileEncryptedService, CreateUserService, UpdateUserService, ManagementService, ProposeReadFileEncryptedService,
 		AcceptReadFileEncryptedService, RejectReadFileEncryptedService, EncryptKeyService, IdentityService, ShareKeyService, LogService,
-		AcceptProposedFileEncryptedService, RejectProposedFileEncryptedService, DeleteFileService, EncryptFileService
+		AcceptProposedFileEncryptedService, RejectProposedFileEncryptedService, DeleteFileService, EncryptFileService, WalletService
 	]
 })
 export class FileEncryptedComponent extends IComponent<Employee> implements OnInit {
@@ -82,8 +83,8 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	isOpenCreate = false;
 	isOpenEdit = false;
 	editPath = '';
+	grid = true;
 	public currentPing: any;
-	public decryptFileEntity: EncryptFileEntity = new EncryptFileEntity();
 	public currentLog: Log[] = [];
 	public actionList = ActionList;
 	private onTouchedCallback: () => void = noop;
@@ -185,75 +186,45 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	Search(Url: string, isPre?: boolean) {
-		this.fileEncryptedService.getAll().subscribe(x => {
-			if (!isPre) {
-				this.post = new Stack<any>();
-				this.previous.push(this.filePath);
-			}
-			Url = this.decodeSrc(Url);
-			x = x.map(y => {
-				y.uid = this.decodeSrc(y.uid);
-				return y;
-			});
-			this.filePath = Url[Url.length - 1] == '/' ? Url : Url + '/';
-			this.filePath = this.filePath[0] == '/' ? this.filePath : '/' + this.filePath;
-			let final = x.filter(t => {
-				if (t.uid.indexOf(this.filePath) != 0) {
-					return false;
-				}
-				return t.uid.substr(Url.length).indexOf('/') < 0;
-			});
-			this.fileBrowserEntities = final.map(k => {
-				const t = new FileBrowserEntity();
-				const a = k.uid.split('/');
-				t.Name = a[a.length - 1];
-				// t.Extension = 'xxcc';
-				// t.Size = 2222;
-				// t.LastModified = 'xxcc';
-				t.Src = k.uid;
-				return t;
-			});
-			final = x.filter(t => {
-				if (t.uid.indexOf(this.filePath) != 0) {
-					return false;
-				}
-				return t.uid.substr(Url.length).indexOf('/') > -1;
-			});
+		if (!isPre) {
+			this.post = new Stack<any>();
+			this.previous.push(this.filePath);
+		}
+		Url = this.decodeSrc(Url);
+		this.filePath = Url[Url.length - 1] == '/' ? Url : Url + '/';
+		this.filePath = this.filePath[0] == '/' ? this.filePath : '/' + this.filePath;
+		let end = Url.length;
+		if (Url[end - 1] == '/') {
+			end = end - 1;
+		}
+		this.fileMap = Url.substring(0, end).split('/').filter(t => t != '');
+		this.fileEncryptedService.getparticipant(Url).subscribe(x => {
+			const file_list = x.file_list.map(t => decodeURI(decodeURI(t.substr('resource:file.FileEncrypted#'.length))));
+			this.fileBrowserEntities = [];
 			this.folderBrowserEntities = [];
-			final.forEach(k => {
+			x.file_list_directory.forEach((a, i) => {
 				const t = new FileBrowserEntity();
-				const a = k.uid.substr(Url.length).split('/');
-				t.Name = a[0];
-				t.Src = Url + t.Name + '/';
+				const b = file_list[i].substr(Url.length).split('/');
+				t.Name = b[0];
 				t.IsEdit = false;
-				if (!this.folderBrowserEntities.some(f => f.Name == t.Name)) { this.folderBrowserEntities.push(t); }
+				if (a) {
+					t.Src = Url + t.Name + '/';
+					this.folderBrowserEntities.push(t);
+				} else {
+					t.Src = Url + t.Name;
+					this.fileBrowserEntities.push(t);
+				}
 			});
-			let end = Url.length;
-			if (Url[end - 1] == '/') {
-				end = end - 1;
+			this.toastr.ShowSuccess('Tải dữ liệu thành công');
+		}, error1 => {
+			if (error1.status == 404) {
+				this.fileBrowserEntities = [];
+				this.folderBrowserEntities = [];
+			} else {
+				this.toastr.ShowError(error1.message);
 			}
-			this.fileMap = Url.substring(0, end).split('/').filter(t => t != '');
+			console.log(error1);
 		});
-		// this.FileBrowserService.getFiles(Url).subscribe(x => {
-		// 	let end = Url.length;
-		// 	if (Url[end - 1] == '/') {
-		// 		end = end - 1;
-		// 	}
-		// 	this.fileMap = Url.substring(0, end).split('/');
-		// 	this.fileBrowserEntities = x;
-		// 	if (IsCreate == true) {
-		// 		for (const item of this.fileBrowserEntities) {
-		// 			if (item.IsDirectory && item.Name === 'NewFolder') {
-		// 				item.IsEdit = true;
-		// 			}
-		// 		}
-		// 	}
-		// 	this.fileBrowserEntities.forEach(f => {
-		// 		f.IsSelected = this.selectedFileEntities.some(ff => {
-		// 			return ff.Src == f.Src;
-		// 		})
-		// 	})
-		// });
 	}
 
 	OpenContext(a, cm, file: FileBrowserEntity) {
@@ -447,7 +418,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	requestFile() {
 		const propose = {uid: this.encodeSrc(this.CurrentFile.Src)};
 		this.ProposeReadFileEncryptedService.addTransaction(propose).subscribe(() => {
-			this.toastr.ShowSuccess('Thành công');
+			this.toastr.ShowSuccess();
 		});
 	}
 
@@ -610,7 +581,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		};
 		this.AcceptProposedFileEncryptedService.addTransaction(x).subscribe(b => {
 			this.getFileDetail(true);
-			this.toastr.ShowSuccess('Thành công!');
+			this.toastr.ShowSuccess();
 		});
 	}
 
@@ -621,7 +592,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		};
 		this.RejectProposedFileEncryptedService.addTransaction(x).subscribe(b => {
 			this.getFileDetail(true);
-			this.toastr.ShowSuccess('Thành công!');
+			this.toastr.ShowSuccess();
 		});
 	}
 
@@ -634,7 +605,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		const e = {uid: this.encodeSrc(t.uid)};
 		this.DeleteFileService.addTransaction(e).subscribe(x => {
 			this.getFileDetail(true);
-			this.toastr.ShowSuccess('Thành công!');
+			this.toastr.ShowSuccess();
 		});
 	}
 

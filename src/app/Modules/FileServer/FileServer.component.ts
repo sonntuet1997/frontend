@@ -38,7 +38,6 @@ export class FileServerComponent extends IComponent<User> {
 	constructor(userService: FileServerService, toastr: BottomToastsManager, create: CreateFileServerService,
 							update: UpdateFileServerService, private router: Router) {
 		super(toastr);
-		this.title = this.router.url.indexOf('Admin') > 0 ? 'Quản trị người dùng' : 'Người dùng';
 		this.getService = userService;
 		this.createService = create;
 		this.updateService = update;
@@ -51,7 +50,7 @@ export class FileServerComponent extends IComponent<User> {
 		const param = this.title == 'Người dùng' ? {'where': {'manager': false}} : {'where': {'manager': true}};
 		this.getService.getAll(param).subscribe(p => {
 			this.entities = p;
-			this.toastr.ShowSuccess();
+			this.toastr.ShowSuccess('Tải dữ liệu thành công');
 		}, e => {
 			this.toastr.ShowError(e);
 		});

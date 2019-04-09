@@ -1,5 +1,6 @@
-<div>
-	<modal-header>
+<table class="table table-bordered header-fixed">
+	<thead>
+	<tr>
 		<h5 class="bg-success" id="add_modal">
 			<span class="btn-group">
 				<button class="btn btn-success" (click)="backward()" [disabled]="previous.size == 0">
@@ -14,73 +15,99 @@
 				<button *ngFor="let url of fileMap; let i = index" class="btn btn-success btn-lg" (click)="goToDirectory(i)"><a
 					style="cursor: default">{{url}}</a></button>
 			</span>
+			<span class="btn-group float-right">
+				<button class="btn btn-success btn-lg" (click)="grid = true"><i class="fas fa-th"></i> </button>
+				<button class="btn btn-success btn-lg" (click)="grid = false"><i class="fa fa-list"></i> </button>
+			</span>
 		</h5>
-	</modal-header>
-	<modal-body>
-		<div class="row">
-			<div class="col-md-10 col-sm-12" style="max-height:39rem;overflow-y:auto;text-align: center">
+	</tr>
+	</thead>
+	<tbody *ngIf="grid">
+	<tr>
+		<div class="row" style="text-align: center">
+			<div class="col-md-12 col-sm-12">
 				<div class="row">
+					<!--<div class="card col-md-2" style="height:10rem"-->
+					<!--*ngFor="let file of folderBrowserEntities; let i = index"-->
+					<!--(contextmenu)="OpenContext($event,cmFolder,file);">-->
 					<div class="card col-md-2" style="height:10rem"
-							 *ngFor="let file of folderBrowserEntities; let i = index"
-							 (contextmenu)="OpenContext($event,cmFolder,file);">
+							 *ngFor="let file of folderBrowserEntities; let i = index">
 						<i class="fa fa-8x fa-folder" (dblclick)="Search(file.Src)"></i>
 						<p class="card-title" *ngIf="!file.IsEdit">{{file.Name}}</p>
 						<input type="text" class="form-control form-control-sm" [(ngModel)]="file.Name"
 									 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
 					</div>
+					<!--<div class="card col-md-2" style="height:10rem"-->
+					<!--*ngFor="let file of fileBrowserEntities; let i = index"-->
+					<!--(contextmenu)="OpenContext($event,cmFile,file);">					-->
 					<div class="card col-md-2" style="height:10rem"
-							 *ngFor="let file of fileBrowserEntities; let i = index"
-							 (contextmenu)="OpenContext($event,cmFile,file);">
-						<label class="custom-checkbox">
-							<input type="checkbox" (click)="toggleFile(file)" [checked]="file.IsSelected">
-							<span class="checkmark"></span>
-						</label>
-						<i class="fa fa-6x fa-file-alt" (dblclick)="viewInfo(file);"
+							 *ngFor="let file of fileBrowserEntities; let i = index" (click)="CurrentFile = file; getFileDetail()">
+						<!--<label class="custom-checkbox">-->
+						<!--<input type="checkbox" (click)="toggleFile(file)" [checked]="file.IsSelected">-->
+						<!--<span class="checkmark"></span>-->
+						<!--</label>-->
+						<i class="fa fa-6x fa-file-alt"
 							 style="margin-top: 1rem; margin-bottom: 1rem"></i>
 						<p class="card-title" *ngIf="!file.IsEdit">{{file.Name}}</p>
-						<input type="text" class="form-control form-control-sm" [(ngModel)]="file.Name"
-									 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
 					</div>
 					<p-contextMenu appendTo="body" #cmFolder [model]="itemsFolder" [style]="{'width':'100px'}"></p-contextMenu>
 					<p-contextMenu appendTo="body" #cmFile [model]="itemsFile" [style]="{'width':'200px'}"></p-contextMenu>
 				</div>
 			</div>
-			<div class="col-md-2 col-sm-12"
-					 style="max-height: 33rem;padding: 0;overflow-y: auto;border-left: 3px solid rgba(0,0,0,.4)">
-				<div class="bg-danger btn-info card card-header">Danh sách file được chọn</div>
-				<ul class="list-group row">
-					<li class="list-group-item col-md-12 col-sm-12"
-							*ngFor="let selected of selectedFileEntities; let i of index">
-						<span (click)="toggleFile(selected)" [class]="'remove-tag '" *ngIf="!Disabled"> &times;</span>
-						{{selected.Src}};
-					</li>
-				</ul>
-			</div>
 		</div>
-	</modal-body>
-	<modal-footer>
-		<div class="btn-group" role="group" aria-label="Basic example">
-			<input type="file"  #fileInput placeholder="Upload file..."
-						 style="display: none;"/>
-			<button (click)="AddNewFolder()" class="btn btn-primary">
-				<i class="fa fa-folder-plus"></i> Tạo thư mục
-			</button>
-			<button (click)="isOpenCreate = true" class="btn btn-success">
-				<i class="fa fa-upload" aria-hidden="true"></i> Gửi file
-			</button>
-			<!--<button [routerLink]="['Create']" class="btn btn-success">-->
-			<!--<i class="fa fa-upload" aria-hidden="true"></i> Gửi file-->
-			<!--</button>-->
-			<!--<button (click)="finishTrigger();"-->
-			<!--class="btn btn-success">-->
-			<!--<i class="fa fa-check" aria-hidden="true"></i> Chọn-->
-			<!--</button>-->
-			<button type="button" class="btn btn-danger" data-dismiss="modal">
-				<span><i class="fa fa-times" aria-hidden="true"></i> Hủy</span>
-			</button>
-		</div>
-	</modal-footer>
-</div>
+	</tr>
+	</tbody>
+	<tbody *ngIf="!grid" style="max-height:39rem;overflow-y:auto;">
+		<tr *ngFor="let file of folderBrowserEntities; let i = index" (dblclick)="Search(file.Src)">
+			<td  style="border: solid 1px rgba(0,0,0,.25);">
+				<i class="fa fa-folder" style="margin-right: 1rem"></i>
+				<span *ngIf="!file.IsEdit">{{file.Name}}</span>
+				<input type="text" class="form-control form-control-sm" [(ngModel)]="file.Name"
+							 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
+			</td>
+		</tr>
+		<tr *ngFor="let file of fileBrowserEntities; let i = index"
+				(click)="CurrentFile = file; getFileDetail()">
+			<td  style="border: solid 1px rgba(0,0,0,.25);">
+				<i class="fa fa-file-alt" style="margin-right: 1rem"></i>	<span *ngIf="!file.IsEdit">{{file.Name}}</span>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+	<div class="btn-group" role="group" aria-label="Basic example">
+		<input type="file" #fileInput placeholder="Upload file..."
+					 style="display: none;"/>
+		<button (click)="AddNewFolder()" class="btn btn-primary">
+			<i class="fa fa-folder-plus"></i> Tạo thư mục
+		</button>
+		<button (click)="isOpenCreate = true" class="btn btn-success">
+			<i class="fa fa-upload" aria-hidden="true"></i> Gửi file
+		</button>
+		<!--<button [routerLink]="['Create']" class="btn btn-success">-->
+		<!--<i class="fa fa-upload" aria-hidden="true"></i> Gửi file-->
+		<!--</button>-->
+		<!--<button (click)="finishTrigger();"-->
+		<!--class="btn btn-success">-->
+		<!--<i class="fa fa-check" aria-hidden="true"></i> Chọn-->
+		<!--</button>-->
+		<!--<button type="button" class="btn btn-danger" data-dismiss="modal">-->
+		<!--<span><i class="fa fa-times" aria-hidden="true"></i> Hủy</span>-->
+		<!--</button>-->
+	</div>
+	</tfoot>
+</table>
+
+<!--<div class="col-md-2 col-sm-12"-->
+<!--style="max-height: 33rem;padding: 0;overflow-y: auto;border-left: 3px solid rgba(0,0,0,.4)">-->
+<!--<div class="bg-danger btn-info card card-header">Danh sách file được chọn</div>-->
+<!--<ul class="list-group row">-->
+<!--<li class="list-group-item col-md-12 col-sm-12"-->
+<!--*ngFor="let selected of selectedFileEntities; let i of index">-->
+<!--<span (click)="toggleFile(selected)" [class]="'remove-tag '" *ngIf="!Disabled"> &times;</span>-->
+<!--{{selected.Src}};-->
+<!--</li>-->
+<!--</ul>-->
+<!--</div>-->
 <app-create-file-encrypted *ngIf="isOpenCreate" [path]="filePath" [isCreate]="true"
 													 (finish)="Search(filePath,true);isOpenCreate = false"></app-create-file-encrypted>
 <app-modal #modal>
@@ -293,22 +320,22 @@
 	</modal-footer>
 </app-modal>
 <!--<app-modal #viewFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">-->
-	<!--<modal-header>-->
-		<!--<h5 class="modal-title" style="color:white">-->
-			<!--<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>-->
-			<!--Xem nội dung file-->
-		<!--</h5>-->
-	<!--</modal-header>-->
-	<!--<modal-body>-->
-		<!--<app-encryptfile [type]="'Decrypt'" [decryptFileEntity]="decryptFileEntity"></app-encryptfile>-->
-	<!--</modal-body>-->
-	<!--<modal-footer>-->
-		<!--<div class="btn-group">-->
-			<!--<button (click)="viewFileModal.close();modal.open()" class="btn btn-success">-->
-				<!--<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất-->
-			<!--</button>-->
-		<!--</div>-->
-	<!--</modal-footer>-->
+<!--<modal-header>-->
+<!--<h5 class="modal-title" style="color:white">-->
+<!--<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>-->
+<!--Xem nội dung file-->
+<!--</h5>-->
+<!--</modal-header>-->
+<!--<modal-body>-->
+<!--<app-encryptfile [type]="'Decrypt'" [decryptFileEntity]="decryptFileEntity"></app-encryptfile>-->
+<!--</modal-body>-->
+<!--<modal-footer>-->
+<!--<div class="btn-group">-->
+<!--<button (click)="viewFileModal.close();modal.open()" class="btn btn-success">-->
+<!--<i class="fa fa-check" aria-hidden="true"></i> Hoàn tất-->
+<!--</button>-->
+<!--</div>-->
+<!--</modal-footer>-->
 <!--</app-modal>-->
 <app-modal #logFileModal (onClose)="modal.open()" (onClickOutSide)="modal.open()">
 	<modal-header>

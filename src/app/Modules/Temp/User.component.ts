@@ -29,7 +29,7 @@ import {UpdateUserService} from '../Transaction/UpdateUser/UpdateUser.service';
 	providers: [UserService, CreateUserService, UpdateUserService]
 })
 export class UsersComponent extends IComponent<Employee> {
-	public title = 'Nhân viên';
+	public title = 'Người dùng';
 	public SexList = SexList;
 
 	constructor(userService: UserService, toastr: BottomToastsManager, create: CreateUserService,

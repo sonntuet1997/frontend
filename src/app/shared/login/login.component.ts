@@ -32,7 +32,7 @@ export class LoginComponent {
 			const action = params.get('action');
 			if (action == 'logout') {
 				this.setCookie('access_token', '', 0);
-				this.toastr.ShowSuccess('Logout success!');
+				this.toastr.ShowSuccess('Đăng xuất thành công!');
 				WalletService.IsLogin.next(false);
 			} else if (action == 'signin') {
 				this.SignIn();

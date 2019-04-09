@@ -61,8 +61,12 @@ export class IdentityComponent extends IComponent<Identity> {
 			reader.addEventListener('loadend', (e: any) => {
 				const text = e.srcElement.result;
 				const er = JSON.parse(text).error;
-				const erArr = er.message.split(er.name);
-				this.toastr.ShowError(erArr[erArr.length - 1]);
+				if (er.message.indexOf('"code":0')) {
+					this.toastr.ShowError('Tên định danh bị trùng!');
+				} else {
+					const erArr = er.message.split(er.name);
+					this.toastr.ShowError(erArr[erArr.length - 1]);
+				}
 			});
 			reader.readAsText(error.error);
 		});
@@ -70,8 +74,7 @@ export class IdentityComponent extends IComponent<Identity> {
 
 	revoke(identityId) {
 		this.identityService.revoke(identityId).subscribe(x => {
-			this.toastr.ShowSuccess();
-			this.search();
+			// this.toastr.ShowSuccess();
 			this.search();
 		}, error => {
 			const er = error.error.error;

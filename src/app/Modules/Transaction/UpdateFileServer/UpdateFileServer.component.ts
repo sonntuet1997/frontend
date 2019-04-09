@@ -55,7 +55,7 @@ export class UpdateFileServerComponent implements OnInit {
 					tempList.push(transaction);
 				});
 				this.allTransactions = tempList;
-				this.toastr.ShowSuccess('success!');
+				this.toastr.ShowSuccess('Tải dữ liệu thành công');
 			})
 			.catch((error) => {
 				if (error === 'Server error') {

@@ -49,7 +49,7 @@ export class UserComponent extends IComponent<User> {
 		const param = this.title == 'Người dùng' ? {'where': {'manager': false}} : {'where': {'manager': true}};
 		this.getService.getAll(param).subscribe(p => {
 			this.entities = p;
-			this.toastr.ShowSuccess();
+			this.toastr.ShowSuccess('Tải dữ liệu thành công');
 		}, e => {
 			this.toastr.ShowError(e);
 		});
