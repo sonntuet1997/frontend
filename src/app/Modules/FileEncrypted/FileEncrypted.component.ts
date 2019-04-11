@@ -90,7 +90,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	private onChangeCallback: (_: any) => void = noop;
 	public newFolderName = '';
 	public currentPath = '';
-	public currentPing: any =  null;
+	static currentPing: any =  null;
 	constructor(public fileEncryptedService: FileEncryptedService, private FileService: FileService,
 							private managementService: ManagementService, public ProposeReadFileEncryptedService: ProposeReadFileEncryptedService,
 							private DirectoryService: DirectoryService, toastr: BottomToastsManager, vcr: ViewContainerRef,
@@ -102,8 +102,8 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	) {
 		super(toastr);
 		ManagementService.currentPing.subscribe(x => {
-			this.currentPing = x;
-			this.currentPing.participant = encodeURI(this.currentPing.participant);
+			FileEncryptedComponent.currentPing = x;
+			FileEncryptedComponent.currentPing.participant = encodeURI(FileEncryptedComponent.currentPing.participant);
 		});
 		this.Search('/', true);
 	}
@@ -163,18 +163,18 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			v.meta_data = JSON.parse(v.meta_data);
 			v.requiredPeopleList = v.control_info.required_list.map(x => ({name: x.split('#')[1], IsSelected: true}));
 			v.optionalPeopleList = v.control_info.optional_list.map(x => ({name: x.split('#')[1], IsSelected: true}));
-			if(this.currentPing == null) {
+			if(FileEncryptedComponent.currentPing == null) {
 				this.toastr.ShowError('Lỗi người dùng');
 			} else {
-				v.isAdmin = v.control_info.required_list.some(x => x == 'resource:' + this.currentPing.participant)
-					|| v.control_info.optional_list.some(x => x == 'resource:' + this.currentPing.participant);
+				v.isAdmin = v.control_info.required_list.some(x => x == 'resource:' + FileEncryptedComponent.currentPing.participant)
+					|| v.control_info.optional_list.some(x => x == 'resource:' + FileEncryptedComponent.currentPing.participant);
 				v.status = 1;
 				this.fileInfo = v;
-				const accessInfo = v.access_info_list.find(t => t.user == 'resource:' + this.currentPing.participant);
+				const accessInfo = v.access_info_list.find(t => t.user == 'resource:' + FileEncryptedComponent.currentPing.participant);
 				if (accessInfo == null) {
 					v.status = 3;
 				} else {
-					const cryptoList = accessInfo.crypto_list.filter(t => t.identity == 'resource:' + this.currentPing.identity);
+					const cryptoList = accessInfo.crypto_list.filter(t => t.identity == 'resource:' + FileEncryptedComponent.currentPing.identity);
 					v.cryptoList = cryptoList;
 					let check = v.control_info.required_list.every(s => {
 						return cryptoList.some(k => k.issuer == s);
@@ -205,7 +205,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			end = end - 1;
 		}
 		this.fileMap = Url.substring(0, end).split('/').filter(t => t != '');
-		this.fileEncryptedService.getparticipant(Url).subscribe(x => {
+		this.fileEncryptedService.getparticipant(this.encodeSrc(Url)).subscribe(x => {
 			const file_list = x.file_list.map(t => decodeURI(decodeURI(t.substr('resource:file.FileEncrypted#'.length))));
 			this.fileBrowserEntities = [];
 			this.folderBrowserEntities = [];
@@ -326,8 +326,8 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	viewInfo() {
 		const check = new EventEmitter();
 		const arr = [];
-		const cryptoList = this.fileInfo.access_info_list.find(o => o.user == 'resource:' + this.currentPing.participant)
-			.crypto_list.filter(o => 'resource:' + this.currentPing.identity == o.identity);
+		const cryptoList = this.fileInfo.access_info_list.find(o => o.user == 'resource:' + FileEncryptedComponent.currentPing.participant)
+			.crypto_list.filter(o => 'resource:' + FileEncryptedComponent.currentPing.identity == o.identity);
 		check.subscribe(f => {
 			arr.push(f);
 			if (arr.length == cryptoList.length) {
@@ -479,16 +479,16 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	needApprove(list) {
-		const t = list.find(x => x.issuer == 'resource:' + this.currentPing.participant);
+		const t = list.find(x => x.issuer == 'resource:' + FileEncryptedComponent.currentPing.participant);
 		return t == null || t.encrypted_key == '';
 	}
 
 	approveView(t) {
 		const ek = new EncryptKeyEntity();
 		ek.privateKey = ManagementService.privateKey;
-		const accessInfo = this.fileInfo.access_info_list.find(t => t.user == 'resource:' + this.currentPing.participant);
-		const cryptoInfo = accessInfo.crypto_list.find(t => t.issuer == 'resource:' + this.currentPing.participant
-			&& 'resource:' + this.currentPing.identity == t.identity);
+		const accessInfo = this.fileInfo.access_info_list.find(t => t.user == 'resource:' + FileEncryptedComponent.currentPing.participant);
+		const cryptoInfo = accessInfo.crypto_list.find(t => t.issuer == 'resource:' + FileEncryptedComponent.currentPing.participant
+			&& 'resource:' + FileEncryptedComponent.currentPing.identity == t.identity);
 		ek.data = cryptoInfo.encrypted_key;
 		this.EncryptKeyService.decrypt(ek).subscribe(rawKey => {
 				this.IdentityService.getAll().subscribe(identities => {
@@ -532,7 +532,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 							check.next({
 								public_key: d.certificate,
 								encrypted_key: e.data,
-								issuer: 'resource:' + this.currentPing.participant,
+								issuer: 'resource:' + FileEncryptedComponent.currentPing.participant,
 								identity: r['$class'] + '#' + r.identityId
 							});
 						});
@@ -551,7 +551,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			}
 			const crypto_list = k.map(y => {
 				return {
-					issuer: 'resource:' + this.currentPing.participant,
+					issuer: 'resource:' + FileEncryptedComponent.currentPing.participant,
 					identity: y['$class'] + '#' + y.identityId,
 					public_key: y.certificate,
 					encrypted_key: '',
@@ -607,7 +607,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	}
 
 	needAccept(list) {
-		const t = list.proposing_file.vote_result_list.find(x => x.user == 'resource:' + this.currentPing.participant);
+		const t = list.proposing_file.vote_result_list.find(x => x.user == 'resource:' + FileEncryptedComponent.currentPing.participant);
 		return t == null || !t.is_accept;
 	}
 
@@ -665,9 +665,9 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			IsSelected: true
 		}));
 		// this.ManagementService.ping().subscribe(res => {
-		// 	this.currentPing = res;
-		// 	v.isAdmin = v.control_info.required_list.some(x => x == 'resource:' + this.currentPing.participant)
-		// 		|| v.control_info.optional_list.some(x => x == 'resource:' + this.currentPing.participant);
+		// 	FileEncryptedComponent.currentPing = res;
+		// 	v.isAdmin = v.control_info.required_list.some(x => x == 'resource:' + FileEncryptedComponent.currentPing.participant)
+		// 		|| v.control_info.optional_list.some(x => x == 'resource:' + FileEncryptedComponent.currentPing.participant);
 		// 	v.status = 1;
 		// 	this.fileInfo = v;
 		// 	const accessInfo = v.access_info_list.find(t => t.user == 'resource:' + res.participant);

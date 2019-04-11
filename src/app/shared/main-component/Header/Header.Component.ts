@@ -161,12 +161,12 @@ export class HeaderComponent {
 					// const UpdateDepartment = new MenuModel('Cập nhật cơ sở y tế', 'Transactions/UpdateDepartment');
 					// Transactions.addSub(UpdateDepartment);
 					this.MenuList.push(Crypto);
-					const Management = new MenuModel('Quản lý', 'Management');
-					this.MenuList.push(Management);
-					const Historian = new MenuModel('Lịch sử', 'Management/Historian');
-					Management.addSub(Historian);
-					const Identities = new MenuModel('Định danh', 'Management/Identity');
-					Management.addSub(Identities);
+					// const Management = new MenuModel('Quản lý', 'Management');
+					// this.MenuList.push(Management);
+					// const Historian = new MenuModel('Lịch sử', 'Management/Historian');
+					// Management.addSub(Historian);
+					// const Identities = new MenuModel('Định danh', 'Management/Identity');
+					// Management.addSub(Identities);
 					break;
 				}
 				case 'FileServer': {

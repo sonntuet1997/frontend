@@ -80,6 +80,12 @@ export class AppComponent implements OnInit {
 						}
 						break;
 					}
+					case 'transaction.file.ApplyFileEncryptedEvent': {
+						if (data.relative.findIndex(v => v == 'resource:' + this.currentPing.participant) > -1) {
+							this.toastr.ShowInfo('File: ' + decodeURIComponent(decodeURIComponent(data.file)).substr('resource:file.FileEncrypted#'.length) + (data.file_action == 'UPDATE' ? ' đã được sửa' : ' đã bị xoá'));
+						}
+						break;
+					}
 					default: {
 						console.log(msg);
 						this.toastr.ShowInfo(msg.data);

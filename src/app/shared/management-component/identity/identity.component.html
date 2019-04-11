@@ -79,7 +79,7 @@
 					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
 				</td>
 				<td>
-					{{participant.participant}}
+					{{participant.participant | uri}}
 					<!--<span *ngIf="participant['Action'] != 'CREATE' && participant['Action'] != 'EDIT'">{{participant.name}}</span>-->
 					<!--<input class="form-control" [(ngModel)]="participant.name" type="text"-->
 					<!--placeholder="Enter Name..." *ngIf="participant['Action'] == 'CREATE' || participant['Action'] == 'EDIT'">-->
