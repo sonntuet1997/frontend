@@ -37,14 +37,14 @@
 				<h5 class="card-title">Giải mã file</h5>
 				<p class="card-text">Giải mã file sử dụng AES-256</p>
 				<div class="form-group row">
-					<label for="staticEmail" class="col-2 col-form-label">Khóa: </label>
+					<label class="col-2 col-form-label">Khóa: </label>
 					<div class="col-10">
 						<input type="text" class="form-control" id="inputPassword" placeholder="Password"
 									 [(ngModel)]="decryptFileEntity.key">
 					</div>
 				</div>
 				<div class="form-group row">
-					<label for="staticEmail" class="col-2 col-form-label">File: </label>
+					<label class="col-2 col-form-label">File: </label>
 					<div class="col-10">
 						<p class="btn btn-primary form-control" type="text" *ngIf="file2.name == null" (click)="dec.OpenFile()">Chọn file
 							cần giải mã</p>

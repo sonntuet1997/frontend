@@ -39,6 +39,7 @@ import {UpdateUserComponent} from './Modules/Transaction/UpdateUser/UpdateUser.c
 import {UpdateFileServerComponent} from './Modules/Transaction/UpdateFileServer/UpdateFileServer.component';
 import {CreateFileServerComponent} from './Modules/Transaction/CreateFileServer/CreateFileServer.component';
 import {FileServerComponent} from './Modules/FileServer/FileServer.component';
+import {HashComponent} from "./Modules/Hash/Hash.component";
 
 const routes: Routes = [
 	{path: '', component: HomeComponent},
@@ -47,6 +48,7 @@ const routes: Routes = [
 		children:
 			[
 				{path: '', component: CryptoComponent},
+				{path: 'Hash', component: HashComponent},
 				{path: 'EncryptFile', component: EncryptFileComponent},
 				{path: 'EncryptKey', component: EncryptKeyComponent},
 				{path: 'ShareKey', component: ShareKeyComponent}

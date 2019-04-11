@@ -32,6 +32,7 @@ export const ActionList = [
 	{value: 'DELETE', name: 'Xóa'},
 	{value: 'DOWNLOAD', name: 'Tải xuống'},
 	{value: 'READ_PROPOSE', name: 'Yêu cầu đọc'},
+	{value: 'PROPOSE_DELETE', name: 'Yêu cầu xoá'},
 ];
 
 export const IssueStatusList = [

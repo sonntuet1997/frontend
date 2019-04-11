@@ -9,27 +9,27 @@ export class BottomToastsManager {
 		this.toastrService.toastrConfig.autoDismiss = true;
 	}
 
-	ShowSuccess(message?: any) {
+	ShowSuccess(message?: any, title?: any) {
 		if (message != null && typeof message !== 'string') {
-			this.toastrService.success('', 'Thành công');
+			this.toastrService.success('', title == null ? 'Thành công' : title);
 		} else {
-			this.toastrService.success(message, 'Thành công');
+			this.toastrService.success(message, title == null ? 'Thành công' : title);
 		}
 	}
 
-	ShowWarning(message: any) {
-		this.toastrService.warning(message, 'Cảnh báo');
+	ShowWarning(message: any, title?: any) {
+		this.toastrService.warning(message, title == null ? 'Cảnh báo' : title);
 	}
 
-	ShowError(message: any) {
+	ShowError(message: any, title?: any) {
 		if (typeof message != 'string') {
-			this.toastrService.error(message.error, 'Lỗi');
+			this.toastrService.error(message.error, title == null ? 'Lỗi' : title);
 		} else {
-			this.toastrService.error(message, 'Lỗi');
+			this.toastrService.error(message, title == null ? 'Lỗi' : title);
 		}
 	}
 
-	ShowInfo(message: any) {
-		this.toastrService.info(message, 'Thông báo');
+	ShowInfo(message: any, title?: any) {
+		this.toastrService.info(message, title == null ? 'Thông báo' : title);
 	}
 }

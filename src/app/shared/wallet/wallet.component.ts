@@ -58,6 +58,7 @@ export class WalletComponent implements OnInit {
 	active(name: string) {
 		this.walletService.setDefault(name).subscribe(d => {
 			this.ManagementService.ping().subscribe(res => {
+				ManagementService.currentPing.emit(res);
 				const sub = new EventEmitter();
 				sub.subscribe(t => {
 					this.toastr.ShowSuccess('Sử dụng với vai trò ' + t.name);

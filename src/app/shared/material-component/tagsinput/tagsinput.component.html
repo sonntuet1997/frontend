@@ -3,7 +3,7 @@
         <span [class]="'tag badge ' + (Tag.Class == null ? DefaultTagClass : Tag.Class)"
 							*ngIf="Tag[PropertySelected] == true">
                        <!--{{Tag[DisplayProperty] == null ? Tag.substr(0,TagLength) : Tag[DisplayProperty].substr(0,TagLength)}}{{(Tag[DisplayProperty] == null ? Tag : Tag[DisplayProperty]).length < DisplayProperty ? "" : "..."}}-->
-                       {{Tag[DisplayProperty] == null ? Tag : Tag[DisplayProperty]}}
+                       {{Tag[DisplayProperty] == null ? Tag : Tag[DisplayProperty] | uri}}
            <span (click)="RemoveTag(Tag)" [class]="'remove-tag ' + RemoveTagClass" *ngIf="!Disabled"> x</span>
         </span>
     </span>

@@ -34,8 +34,6 @@
 							 *ngFor="let file of folderBrowserEntities; let i = index">
 						<i class="fa fa-8x fa-folder" (dblclick)="Search(file.Src)"></i>
 						<p class="card-title" *ngIf="!file.IsEdit">{{file.Name}}</p>
-						<input type="text" class="form-control form-control-sm" [(ngModel)]="file.Name"
-									 (keydown.enter)="PostNameFolder(file)" *ngIf="file.IsEdit">
 					</div>
 					<!--<div class="card col-md-2" style="height:10rem"-->
 					<!--*ngFor="let file of fileBrowserEntities; let i = index"-->
@@ -77,7 +75,7 @@
 	<div class="btn-group" role="group" aria-label="Basic example">
 		<input type="file" #fileInput placeholder="Upload file..."
 					 style="display: none;"/>
-		<button (click)="AddNewFolder()" class="btn btn-primary">
+		<button (click)="createDirectory.open()" class="btn btn-primary">
 			<i class="fa fa-folder-plus"></i> Tạo thư mục
 		</button>
 		<button (click)="isOpenCreate = true" class="btn btn-success">
@@ -195,11 +193,11 @@
 									<span *ngFor="let crypto of fileInfo.cryptoList">
 											<span class="badge badge-success" style="margin-right: 3px" placement="bottom"
 														ngbTooltip="Đã phê duyệt" *ngIf="crypto.encrypted_key != ''">
-												{{crypto.issuer.split('#')[1]}}
+												{{crypto.issuer.split('#')[1] | uri}}
 											</span>
 											<span class="badge badge-danger" style="margin-right: 3px" placement="bottom"
 														ngbTooltip="Không phê duyệt" *ngIf="crypto.encrypted_key == ''">
-												{{crypto.issuer.split('#')[1]}}
+												{{crypto.issuer.split('#')[1] | uri}}
 											</span>
 									</span>
 								</div>
@@ -278,17 +276,17 @@
 							<tbody>
 							<tr *ngFor="let t of this.fileInfo.access_info_list; let i = index" style="text-align: center">
 								<td>{{i}}</td>
-								<td>{{t.user.split('#')[1]}}</td>
+								<td>{{t.user.split('#')[1]| uri}}</td>
 								<td>
 									<h6>
 										<span *ngFor="let crypto of t.crypto_list">
 											<span class="badge badge-success" style="margin-right: 3px" placement="bottom"
 														ngbTooltip="Đã phê duyệt" *ngIf="crypto.encrypted_key != ''">
-												{{crypto.issuer.split('#')[1]}}
+												{{crypto.issuer.split('#')[1] | uri}}
 											</span>
 											<span class="badge badge-danger" style="margin-right: 3px" placement="bottom"
 														ngbTooltip="Không phê duyệt" *ngIf="crypto.encrypted_key == ''">
-												{{crypto.issuer.split('#')[1]}}
+												{{crypto.issuer.split('#')[1] | uri}}
 											</span>
 									</span>
 									</h6>
@@ -366,7 +364,7 @@
 							<tbody>
 							<tr *ngFor="let t of currentLog; let i = index" style="text-align: center">
 								<td>{{i}}</td>
-								<td>{{t.user.split('#')[1]}}</td>
+								<td>{{t.user.split('#')[1] | uri}}</td>
 								<td>{{t.timestamp| date: 'hh:mm:ss dd-MM-yyyy'}}</td>
 								<td>{{t.action}}</td>
 							</tr>
@@ -427,7 +425,7 @@
 															[class.badge-danger]="!vote_result.is_accept"
 															style="margin-right: 3px" placement="bottom"
 															ngbTooltip="Đã phê duyệt">
-													{{vote_result.user.split('#')[1]}}
+													{{vote_result.user.split('#')[1] | uri}}
 												</span>
 										</span>
 									<!--</div>-->
@@ -551,6 +549,35 @@
 		<div class="btn-group">
 			<button (click)="fileProposed.close();" class="btn btn-success">
 				<i class="fa fa-check" aria-hidden="true"></i> Trở lại
+			</button>
+		</div>
+	</modal-footer>
+</app-modal>
+
+
+<app-modal #createDirectory>
+	<modal-header>
+		<h5 class="modal-title" style="color:white">
+			<i class="fa fa-backspace fa-rotate-180" aria-hidden="true"></i>
+			Tạo thư  mục
+		</h5>
+	</modal-header>
+	<modal-body>
+		<div class="form-group row">
+			<label class="col-4 col-form-label">Tên thư mục </label>
+			<div class="col-8">
+				<input type="text" class="form-control" placeholder="Nhập tên thư mục ..."
+							 [(ngModel)]="newFolderName"/>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<div class="btn-group">
+			<button (click)="Search(currentPath + newFolderName + '/');createDirectory.close();" class="btn btn-primary">
+				<i class="fa fa-check" aria-hidden="true"></i> Tạo
+			</button>
+			<button (click)="createDirectory.close();" class="btn btn-secondary">
+				<i class="fa fa-times-circle" aria-hidden="true"></i> Trở lại
 			</button>
 		</div>
 	</modal-footer>

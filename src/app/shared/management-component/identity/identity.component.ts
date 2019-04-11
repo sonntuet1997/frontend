@@ -61,8 +61,10 @@ export class IdentityComponent extends IComponent<Identity> {
 			reader.addEventListener('loadend', (e: any) => {
 				const text = e.srcElement.result;
 				const er = JSON.parse(text).error;
-				if (er.message.indexOf('"code":0')) {
+				if (er.message.indexOf('"code":0')>-1) {
 					this.toastr.ShowError('Tên định danh bị trùng!');
+				} else if (er.message.indexOf("does not exist")>-1){
+					this.toastr.ShowError('Người dùng không tồn tại');
 				} else {
 					const erArr = er.message.split(er.name);
 					this.toastr.ShowError(erArr[erArr.length - 1]);

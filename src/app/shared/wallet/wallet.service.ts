@@ -27,7 +27,6 @@ export class WalletService {
 	public static Role = new EventEmitter<any>();
 	public static IsLogin = new EventEmitter<any>();
 	private NAMESPACE = 'wallet';
-
 	constructor(private dataService: DataService<Wallet>) {
 	};
 

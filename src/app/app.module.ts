@@ -98,6 +98,8 @@ import {UpdateUserComponent} from './Modules/Transaction/UpdateUser/UpdateUser.c
 import {UpdateFileServerComponent} from './Modules/Transaction/UpdateFileServer/UpdateFileServer.component';
 import {CreateFileServerComponent} from './Modules/Transaction/CreateFileServer/CreateFileServer.component';
 import {FileServerComponent} from './Modules/FileServer/FileServer.component';
+import {UriPipe} from "./shared/pipe/uri/uri.pipe";
+import {HashComponent} from "./Modules/Hash/Hash.component";
 
 @NgModule({
 	declarations: [
@@ -108,12 +110,12 @@ import {FileServerComponent} from './Modules/FileServer/FileServer.component';
 		ShareKeyComponent,
 		EncryptFileComponent,
 		EncryptKeyComponent,
-		UserComponent, FileEncryptedComponent, CreateFileEncryptedComponent, FileServerComponent,
+		UserComponent, FileEncryptedComponent, CreateFileEncryptedComponent, FileServerComponent, HashComponent,
 		AcceptProposedFileEncryptedComponent, AcceptReadFileEncryptedComponent, CreateFileComponent,
 		CreateUserComponent, DeleteFileComponent, ProposeReadFileEncryptedComponent, RejectProposedFileEncryptedComponent,
 		RejectReadFileEncryptedComponent, UpdateFileComponent, UpdateUserComponent, UpdateFileServerComponent, CreateFileServerComponent,
 		// our app
-		HeaderComponent, ModalComponent, CheckboxComponent, MenuPurchaseComponent,
+		HeaderComponent, ModalComponent, CheckboxComponent, MenuPurchaseComponent, UriPipe,
 		BodyComponent, InputfileComponent, DatetimeComponent, TagsinputComponent,
 		FooterComponent, SexPipe, IssueStatusPipe, ParsePipe, RequestStatusPipe,
 		LoginComponent, FileBrowserComponent, DropdownComponent,

@@ -84,14 +84,15 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 	isOpenEdit = false;
 	editPath = '';
 	grid = true;
-	public currentPing: any;
 	public currentLog: Log[] = [];
 	public actionList = ActionList;
 	private onTouchedCallback: () => void = noop;
 	private onChangeCallback: (_: any) => void = noop;
-
+	public newFolderName = '';
+	public currentPath = '';
+	public currentPing: any =  null;
 	constructor(public fileEncryptedService: FileEncryptedService, private FileService: FileService,
-							private ManagementService: ManagementService, public ProposeReadFileEncryptedService: ProposeReadFileEncryptedService,
+							private managementService: ManagementService, public ProposeReadFileEncryptedService: ProposeReadFileEncryptedService,
 							private DirectoryService: DirectoryService, toastr: BottomToastsManager, vcr: ViewContainerRef,
 							private AcceptReadFileEncryptedService: AcceptReadFileEncryptedService, public EncryptKeyService: EncryptKeyService,
 							private RejectReadFileEncryptedService: RejectReadFileEncryptedService, public IdentityService: IdentityService,
@@ -100,6 +101,10 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 							public RejectProposedFileEncryptedService: RejectProposedFileEncryptedService, public EncryptFileService: EncryptFileService
 	) {
 		super(toastr);
+		ManagementService.currentPing.subscribe(x => {
+			this.currentPing = x;
+			this.currentPing.participant = encodeURI(this.currentPing.participant);
+		});
 		this.Search('/', true);
 	}
 
@@ -158,17 +163,18 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			v.meta_data = JSON.parse(v.meta_data);
 			v.requiredPeopleList = v.control_info.required_list.map(x => ({name: x.split('#')[1], IsSelected: true}));
 			v.optionalPeopleList = v.control_info.optional_list.map(x => ({name: x.split('#')[1], IsSelected: true}));
-			this.ManagementService.ping().subscribe(res => {
-				this.currentPing = res;
+			if(this.currentPing == null) {
+				this.toastr.ShowError('Lỗi người dùng');
+			} else {
 				v.isAdmin = v.control_info.required_list.some(x => x == 'resource:' + this.currentPing.participant)
 					|| v.control_info.optional_list.some(x => x == 'resource:' + this.currentPing.participant);
 				v.status = 1;
 				this.fileInfo = v;
-				const accessInfo = v.access_info_list.find(t => t.user == 'resource:' + res.participant);
+				const accessInfo = v.access_info_list.find(t => t.user == 'resource:' + this.currentPing.participant);
 				if (accessInfo == null) {
 					v.status = 3;
 				} else {
-					const cryptoList = accessInfo.crypto_list.filter(t => t.identity == 'resource:' + res.identity);
+					const cryptoList = accessInfo.crypto_list.filter(t => t.identity == 'resource:' + this.currentPing.identity);
 					v.cryptoList = cryptoList;
 					let check = v.control_info.required_list.every(s => {
 						return cryptoList.some(k => k.issuer == s);
@@ -181,7 +187,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 				if (!isOpened) {
 					this.modal.open();
 				}
-			});
+			}
 		});
 	}
 
@@ -191,6 +197,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 			this.previous.push(this.filePath);
 		}
 		Url = this.decodeSrc(Url);
+		this.currentPath = Url;
 		this.filePath = Url[Url.length - 1] == '/' ? Url : Url + '/';
 		this.filePath = this.filePath[0] == '/' ? this.filePath : '/' + this.filePath;
 		let end = Url.length;
@@ -270,14 +277,15 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 		this.onChanges.emit(file);
 	}
 
-	AddNewFolder() {
-		const t = new FileBrowserEntity();
-		t.Name = 'NewFolder';
-		t.Src = this.fileMap.join('/') + '/NewFolder';
-		t.Extension = 'new';
-		t.IsDirectory = true;
-		this.folderBrowserEntities.push(t);
-	}
+	// AddNewFolder() {
+	// 	const t = new FileBrowserEntity();
+	// 	t.Name = 'NewFolder';
+	// 	t.Src = this.fileMap.join('/') + '/NewFolder';
+	// 	t.Extension = 'new';
+	// 	t.IsDirectory = true;
+	// 	t.IsEdit = true;
+	// 	this.newFolderBrowserEntities.push(t);
+	// }
 
 	RenameFolder() {
 		this.CurrentFolder.IsEdit = true;
@@ -363,7 +371,7 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 					// this.modal.close();
 					// this.viewFileModal.open();
 				}, error1 => {
-					// this.decryptFileEntity = new EncryptFileEntity();
+					// this.decryptFileEntity = new HashEntity();
 					// this.decryptFileEntity.key = error1.error.text;
 					const ek = new EncryptKeyEntity();
 					ek.privateKey = ManagementService.privateKey;
@@ -511,6 +519,8 @@ export class FileEncryptedComponent extends IComponent<Employee> implements OnIn
 							};
 							this.AcceptReadFileEncryptedService.addTransaction(trans).subscribe(() => {
 								this.getFileDetail(true);
+							}, error1 => {
+								this.toastr.ShowError(error1.error.message);
 							});
 						}
 					});

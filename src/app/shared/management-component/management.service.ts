@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {DataService} from '../../data.service';
 import {Observable} from 'rxjs/internal/Observable';
 import 'rxjs/Rx';
@@ -28,7 +28,7 @@ export class ManagementService {
 	static privateKey;
 	static publicKey;
 	private NAMESPACE = 'system';
-
+  static currentPing = new EventEmitter();
 	constructor(private dataService: DataService<Wallet>, public WalletService: WalletService,
 							public ZipService: ZipService) {
 	};

@@ -22,7 +22,7 @@ export class HeaderComponent {
 	Title: string = AppTitle;
 	IsLogin = false;
 
-	constructor(public toastr: BottomToastsManager, private ManagementService: ManagementService,
+	constructor(public toastr: BottomToastsManager, private managementService: ManagementService,
 							public UserService: UserService
 							// , public EmployeeInfoService: EmployeeInfoService
 							// , private UserService: UserService, private PermissionService: PermissionService
@@ -49,9 +49,11 @@ export class HeaderComponent {
 		this.MenuList.push(Home);
 		const Crypto = new MenuModel('Mã hóa', 'Crypto');
 		// this.MenuList.push(Crypto);
+		const Hash = new MenuModel('Băm file', 'Crypto/Hash');
 		const EncryptFile = new MenuModel('Mã hóa file', 'Crypto/EncryptFile');
 		const ShareKey = new MenuModel('Chia sẻ khóa', 'Crypto/ShareKey');
 		const EncryptKey = new MenuModel('Mã hóa khoá', 'Crypto/EncryptKey');
+		Crypto.addSub(Hash);
 		Crypto.addSub(EncryptFile);
 		Crypto.addSub(ShareKey);
 		Crypto.addSub(EncryptKey);
@@ -90,14 +92,7 @@ export class HeaderComponent {
 					// Transactions.addSub(CreateDepartment);
 					// const UpdateDepartment = new MenuModel('Cập nhật cơ sở y tế', 'Transactions/UpdateDepartment');
 					// Transactions.addSub(UpdateDepartment);
-					const Crypto = new MenuModel('Mã hóa', 'Crypto');
 					this.MenuList.push(Crypto);
-					const EncryptFile = new MenuModel('Mã hóa file', 'Crypto/EncryptFile');
-					const ShareKey = new MenuModel('Chia sẻ khóa', 'Crypto/ShareKey');
-					const EncryptKey = new MenuModel('Mã hóa khoá', 'Crypto/EncryptKey');
-					Crypto.addSub(EncryptFile);
-					Crypto.addSub(ShareKey);
-					Crypto.addSub(EncryptKey);
 					const Management = new MenuModel('Quản lý', 'Management');
 					this.MenuList.push(Management);
 					const Historian = new MenuModel('Lịch sử', 'Management/Historian');
@@ -125,14 +120,7 @@ export class HeaderComponent {
 					// Transactions.addSub(CreateDepartment);
 					// const UpdateDepartment = new MenuModel('Cập nhật cơ sở y tế', 'Transactions/UpdateDepartment');
 					// Transactions.addSub(UpdateDepartment);
-					const Crypto = new MenuModel('Mã hóa', 'Crypto');
 					this.MenuList.push(Crypto);
-					const EncryptFile = new MenuModel('Mã hóa file', 'Crypto/EncryptFile');
-					const ShareKey = new MenuModel('Chia sẻ khóa', 'Crypto/ShareKey');
-					const EncryptKey = new MenuModel('Mã hóa khoá', 'Crypto/EncryptKey');
-					Crypto.addSub(EncryptFile);
-					Crypto.addSub(ShareKey);
-					Crypto.addSub(EncryptKey);
 					const Management = new MenuModel('Quản lý', 'Management');
 					this.MenuList.push(Management);
 					const Historian = new MenuModel('Lịch sử', 'Management/Historian');
@@ -172,14 +160,7 @@ export class HeaderComponent {
 					// Transactions.addSub(CreateDepartment);
 					// const UpdateDepartment = new MenuModel('Cập nhật cơ sở y tế', 'Transactions/UpdateDepartment');
 					// Transactions.addSub(UpdateDepartment);
-					const Crypto = new MenuModel('Mã hóa', 'Crypto');
 					this.MenuList.push(Crypto);
-					const EncryptFile = new MenuModel('Mã hóa file', 'Crypto/EncryptFile');
-					const ShareKey = new MenuModel('Chia sẻ khóa', 'Crypto/ShareKey');
-					const EncryptKey = new MenuModel('Mã hóa khoá', 'Crypto/EncryptKey');
-					Crypto.addSub(EncryptFile);
-					Crypto.addSub(ShareKey);
-					Crypto.addSub(EncryptKey);
 					const Management = new MenuModel('Quản lý', 'Management');
 					this.MenuList.push(Management);
 					const Historian = new MenuModel('Lịch sử', 'Management/Historian');
@@ -195,7 +176,8 @@ export class HeaderComponent {
 					break;
 			}
 		});
-		this.ManagementService.ping().subscribe(res => {
+		this.managementService.ping().subscribe(res => {
+			ManagementService.currentPing.emit(res);
 			const sub = new EventEmitter();
 			sub.subscribe(t => {
 				this.toastr.ShowSuccess('Sử dụng với vai trò ' + t.name);
@@ -212,7 +194,7 @@ export class HeaderComponent {
 			} else {
 				sub.next(role);
 			}
-			this.ManagementService.reset();
+			this.managementService.reset();
 		}, error => {
 			console.log(error);
 			const er = error.error.error;
